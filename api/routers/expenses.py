@@ -1,6 +1,11 @@
 from fastapi import APIRouter
+from starlette import status
 
-from schemas.models import User, Category, Expense
+from schemas.expense import (
+    ExpenseCreate,
+    ExpenseUpdate,
+    ExpenseResponse,
+)
 
 expenses_router = APIRouter(
     prefix="/expenses",
@@ -8,30 +13,29 @@ expenses_router = APIRouter(
 )
 
 
-user_1 = User(id=1, telegram_id=123456, username="johndoe", first_name="John")
-category_1 = Category(id=1, title="Food", user_id=user_1)
-
-user_2 = User(id=2, telegram_id=654321, username="janedoe", first_name="Jane")
-category_2 = Category(id=2, title="Transport", user_id=user_2)
-
-expenses = [
-    Expense(id=1, user_id=user_1, category_id=category_1, amount=10.5, description="Lunch"),
-    Expense(id=2, user_id=user_1, category_id=category_1, amount=5.0, description="Snack"),
-    Expense(id=3, user_id=user_1, category_id=category_1, amount=20.0, description="Dinner"),
-    Expense(id=4, user_id=user_2, category_id=category_2, amount=15.0, description="Taxi"),
-    Expense(id=5, user_id=user_2, category_id=category_2, amount=7.5, description="Bus Ticket"),
-]
-@expenses_router.get("/expenses/{telegram_id}")
+@expenses_router.get("/{telegram_id}", response_model=list[ExpenseResponse])
 def get_expenses_by_user(telegram_id: int):
-    user_expenses = []
-    for expense in expenses:
-        if expense.user_id.telegram_id == telegram_id:
-            user_expenses.append(expense)
-    if not user_expenses:
-        return "No expenses found"
-    return user_expenses
+    return "expenses by user"
 
 
-@expenses_router.get("/expenses")
-def get_all_expenses():
-    return expenses
+@expenses_router.post("/", response_model=ExpenseResponse, status_code=status.HTTP_201_CREATED)
+def create_expense(expense_data: ExpenseCreate, telegram_id: int):
+    # Here you would typically save the new expense to the database
+    return {
+        "id": 999,
+        "telegram_id": telegram_id or 123,
+        "category_id": expense_data.category_id,
+        "amount": expense_data.amount,
+        "description": expense_data.description,
+        "created_at": "2025-12-31T23:59:59",
+    }
+
+@expenses_router.patch("/{expense_id}", response_model=ExpenseResponse)
+def update_expense(expense_id: int, update_data: ExpenseUpdate):
+    # Here you would typically update the expense in the database
+    return update_data
+
+@expenses_router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_expense(expense_id: int):
+    # Here you would typically delete the expense from the database
+    return {"message": f"Expense with id {expense_id} deleted"}

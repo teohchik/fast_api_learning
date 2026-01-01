@@ -10,10 +10,3 @@ class Category(BaseModel):
     id: int
     title: str
     user_id: User
-
-class Expense(BaseModel):
-    id: int
-    user_id: User
-    category_id: Category
-    amount: float
-    description: str
