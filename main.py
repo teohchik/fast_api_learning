@@ -6,11 +6,6 @@ from api.routers.expenses import expenses_router
 from api.routers.users import users_router
 from db.init_db import init_db
 
-app = FastAPI()
-
-app.include_router(users_router)
-app.include_router(expenses_router)
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,3 +14,5 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(users_router)
+app.include_router(expenses_router)
