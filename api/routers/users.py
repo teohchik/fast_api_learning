@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from db.deps import get_db
 from schemas.models import User
 
 users_router = APIRouter(
@@ -9,7 +11,7 @@ users_router = APIRouter(
 
 
 @users_router.post("/", response_model=User)
-def create_user(new_user: User):
+async def create_user(new_user: User, db: AsyncSession = Depends(get_db)):
     # Need to save user to the database here
     return new_user
 

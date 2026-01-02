@@ -14,9 +14,8 @@ app.include_router(expenses_router)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # startup
-    init_db()
+    await init_db()
     yield
-    # shutdown (опціонально)
+
 
 app = FastAPI(lifespan=lifespan)
