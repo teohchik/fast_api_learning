@@ -1,20 +1,17 @@
-from datetime import datetime
-from typing import Optional
-
 from pydantic import BaseModel, Field, ConfigDict
 
 
 class UserCreate(BaseModel):
-    telegram_id: int
-    username: Optional[str] = Field(None, max_length=255)
+    telegram_id: int = Field(gt=1)
+    username: str | None = Field(None, max_length=255)
     first_name: str = Field(min_length=1, max_length=255)
-    last_name: Optional[str] = Field(None, max_length=255)
+    last_name: str | None = Field(None, max_length=255)
 
 
 class UserUpdate(BaseModel):
-    first_name: Optional[str] = Field(None, min_length=1, max_length=255)
-    last_name: Optional[str] = Field(None, max_length=255)
-    username: Optional[str] = Field(None, max_length=255)
+    first_name: str | None = Field(None, min_length=1, max_length=255)
+    last_name: str | None = Field(None, max_length=255)
+    username: str | None = Field(None, max_length=255)
 
 
 class UserResponse(BaseModel):
@@ -22,6 +19,6 @@ class UserResponse(BaseModel):
 
     id: int
     telegram_id: int
-    username: Optional[str] = None
+    username: str | None = None
     first_name: str
-    last_name: Optional[str] = None
+    last_name: str | None = None
