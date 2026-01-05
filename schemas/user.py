@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 class UserCreate(BaseModel):
-    telegram_id: int = Field(gt=1)
+    telegram_id: int = Field(gt=0)
     username: str | None = Field(None, max_length=255)
     first_name: str = Field(min_length=1, max_length=255)
     last_name: str | None = Field(None, max_length=255)
