@@ -3,11 +3,10 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     AsyncSession,
 )
-
-DATABASE_URL = "sqlite+aiosqlite:///./database.db"
+from config.settings import settings
 
 engine = create_async_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     echo=True,
 )
 
