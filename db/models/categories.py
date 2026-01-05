@@ -7,7 +7,7 @@ from db.base import Base
 class Category(Base):
     __tablename__ = 'categories'
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String, nullable=False)
+    title: Mapped[str] = mapped_column(String(100), nullable=False)
     user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
