@@ -4,6 +4,6 @@ from pydantic import BaseModel
 
 class PaginationParams(BaseModel):
     page: Annotated[int | None, Query(1, ge=1)]
-    per_page: Annotated[int | None, Query(None, ge=1, le=100)]
+    per_page: Annotated[int | None, Query(20, ge=1, le=100)]
 
 PaginationDep = Annotated[PaginationParams, Depends()]
