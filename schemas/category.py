@@ -7,6 +7,9 @@ class CategoryCreate(BaseModel):
     title: str = Field(min_length=1, max_length=100)
     user_id: int = Field(gt=0)
 
+class CategoryUpdate(BaseModel):
+    title: str = Field(min_length=1, max_length=100)
+
 class CategoryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
