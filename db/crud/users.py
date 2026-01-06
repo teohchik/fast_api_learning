@@ -12,8 +12,8 @@ from schemas.user import UserCreate, UserUpdate, UserResponse
 from schemas.user import UserResponse
 
 
-async def get_users_db(db: AsyncSession) -> list[UserResponse]:
-    users_response = await UsersRepository(db).get_all()
+async def get_users_db(pagination, db: AsyncSession) -> list[UserResponse]:
+    users_response = await UsersRepository(db).get_by_filters(pagination=pagination)
     return [
         UserResponse.model_validate(user)
         for user in users_response
@@ -36,14 +36,12 @@ async def add_user_db(new_user_data: UserCreate, db: AsyncSession) -> UserRespon
     return UserResponse.model_validate(db_user)
 
 
-async def update_user_db(user_id: int, update_data: UserUpdate, db: AsyncSession):
+async def update_user_db(user_id: int, update_data: UserUpdate, db: AsyncSession) -> UserResponse:
     try:
         db_user = await UsersRepository(db).edit_by_id(update_data, user_id)
         await db.commit()
     except NoResultFound:
         await db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
-        )
+        raise HTTPException(status_code=404, detail="Category not found")
+
     return UserResponse.model_validate(db_user)
