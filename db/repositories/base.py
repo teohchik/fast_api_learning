@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
+from api.dependencies import PaginationParams
+
 
 class BaseRepository:
     model = None
@@ -9,17 +11,22 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
-    async def get_all(self, pagination=None):
-        query = select(self.model)
+    async def get_by_filters(
+            self, filters: dict | None = None,
+            pagination: PaginationParams | None = None,
+            order_by=None):
+        stmt = select(self.model)
+        if filters:
+            stmt = stmt.filter_by(**filters)
+        if order_by is not None:
+            stmt = stmt.order_by(order_by)
         if pagination is not None:
-            per_page = pagination.per_page or 10
-            query = (
-                query
-                .limit(per_page)
-                .offset((pagination.page - 1) * per_page)
+            stmt = (
+                stmt
+                .limit(pagination.per_page)
+                .offset((pagination.page - 1) * pagination.per_page)
             )
-
-        result = await self.session.execute(query)
+        result = await self.session.execute(stmt)
         return result.scalars().all()
 
     async def add(self, data: BaseModel):
