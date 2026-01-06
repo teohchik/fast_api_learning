@@ -3,10 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.dependencies import PaginationParams, PaginationDep
-from db.crud.categories import create_category_db, get_category_db
+from api.dependencies import PaginationDep
+from db.crud.categories import create_category_db, update_category_db, get_category_by_user_db
 from db.deps import get_db
-from schemas.category import CategoryResponse, CategoryCreate
+from schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
 
 category_router = APIRouter(
     prefix="/categories",
@@ -15,10 +15,14 @@ category_router = APIRouter(
 
 
 @category_router.get("/", response_model=list[CategoryResponse], status_code=status.HTTP_200_OK)
-async def get_all_categories(pagination: PaginationDep, user_id: int, db: AsyncSession = Depends(get_db)):
-    return await get_category_db(pagination, user_id, db)
+async def get_categories_by_user(pagination: PaginationDep, user_id: int, db: AsyncSession = Depends(get_db)):
+    return await get_category_by_user_db(pagination, user_id, db)
 
 
 @category_router.post("/", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_category(new_category_data: CategoryCreate, db: AsyncSession = Depends(get_db)):
     return await create_category_db(new_category_data, db)
+
+@category_router.patch("/", response_model=CategoryResponse, status_code=status.HTTP_200_OK)
+async def update_category(category_id: int, update_data: CategoryUpdate, db: AsyncSession = Depends(get_db)):
+    return await update_category_db(category_id, update_data, db)
