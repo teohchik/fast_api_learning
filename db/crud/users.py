@@ -1,17 +1,28 @@
+from typing import Any, Coroutine
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.users import User
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
-from schemas.user import UserCreate, UserUpdate
+
+from db.repositories.users import UsersRepository
+from schemas.user import UserCreate, UserUpdate, UserResponse
 from schemas.user import UserResponse
+
+
+async def get_users_db(db: AsyncSession) -> list[UserResponse]:
+    users_response = await UsersRepository(db).get_all()
+    return [
+        UserResponse.model_validate(user)
+        for user in users_response
+    ]
 
 
 async def add_user_db(new_user_data: UserCreate, db: AsyncSession) -> UserResponse:
     try:
-        db_user = User(**new_user_data.model_dump())
-        db.add(db_user)
+        db_user = await UsersRepository(db).add(new_user_data)
         await db.commit()
         print(f"Added new user with ID: {db_user.id}")
     except IntegrityError as exc:
@@ -23,6 +34,7 @@ async def add_user_db(new_user_data: UserCreate, db: AsyncSession) -> UserRespon
         )
 
     return UserResponse.model_validate(db_user)
+
 
 async def update_user_db(telegram_id: int, update_data: UserUpdate, db: AsyncSession):
     query = select(User).where(User.telegram_id == telegram_id)
