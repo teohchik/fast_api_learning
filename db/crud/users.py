@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.users import User
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from fastapi import HTTPException, status
 
 from db.repositories.users import UsersRepository
@@ -36,18 +36,14 @@ async def add_user_db(new_user_data: UserCreate, db: AsyncSession) -> UserRespon
     return UserResponse.model_validate(db_user)
 
 
-async def update_user_db(telegram_id: int, update_data: UserUpdate, db: AsyncSession):
-    query = select(User).where(User.telegram_id == telegram_id)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    update_dict = update_data.model_dump(exclude_unset=True)  # тільки те, що передали
-    for key, value in update_dict.items():
-        setattr(user, key, value)
-
-    await db.commit()
-    await db.refresh(user)
-    return UserResponse.model_validate(user)
+async def update_user_db(user_id: int, update_data: UserUpdate, db: AsyncSession):
+    try:
+        db_user = await UsersRepository(db).edit_by_id(update_data, user_id)
+        await db.commit()
+    except NoResultFound:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found."
+        )
+    return UserResponse.model_validate(db_user)

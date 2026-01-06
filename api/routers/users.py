@@ -24,6 +24,6 @@ async def create_user(new_user_data: UserCreate = Body(openapi_examples={
     return await add_user_db(new_user_data, db)
 
 
-@users_router.patch("/{telegram_id}", response_model=UserResponse)
-async def update_user(telegram_id: int, update_data: UserUpdate, db: AsyncSession = Depends(get_db)):
-    return await update_user_db(telegram_id, update_data, db)
+@users_router.patch("/{user_id}", response_model=UserResponse)
+async def update_user(user_id: int, update_data: UserUpdate, db: AsyncSession = Depends(get_db)):
+    return await update_user_db(user_id, update_data, db)
