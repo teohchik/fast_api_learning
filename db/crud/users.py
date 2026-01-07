@@ -12,6 +12,13 @@ from schemas.user import UserCreate, UserUpdate, UserResponse
 from schemas.user import UserResponse
 
 
+async def get_user_db(user_id, db: AsyncSession) -> UserResponse:
+    user_response = await UsersRepository(db).get_one_or_none(id=user_id)
+    if not user_response:
+        raise HTTPException(status_code=404, detail="User not found")
+    return UserResponse.model_validate(user_response)
+
+
 async def get_users_db(pagination, db: AsyncSession) -> list[UserResponse]:
     users_response = await UsersRepository(db).get_by_filters(pagination=pagination)
     return [

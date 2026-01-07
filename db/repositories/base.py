@@ -11,6 +11,13 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
+    async def get_one_or_none(self, **filters):
+        stmt = select(self.model)
+        if filters:
+            stmt = stmt.filter_by(**filters)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def get_by_filters(
             self, filters: dict | None = None,
             pagination: PaginationParams | None = None,
