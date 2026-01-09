@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, Body
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import PaginationDep
@@ -21,10 +21,7 @@ async def get_users(pagination: PaginationDep, db: AsyncSession = Depends(get_db
 
 
 @users_router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(new_user_data: UserCreate = Body(openapi_examples={
-    "1": {"summary": "Example User", "value":
-        {"telegram_id": 123456789, "username": "example_user", "first_name": "example", "last_name": "example"}}}),
-        db: AsyncSession = Depends(get_db)):
+async def create_user(new_user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     return await add_user_db(new_user_data, db)
 
 
