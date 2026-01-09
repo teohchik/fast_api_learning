@@ -1,6 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from src.api.dependencies import PaginationDep
+from src.db.crud.expenses import add_expense_db, get_expenses_by_user_db, get_expense_db
+from src.db.deps import get_db
 from src.schemas.expense import (
     ExpenseCreate,
     ExpenseUpdate,
@@ -12,18 +16,25 @@ expenses_router = APIRouter(
     tags=["Expenses"]
 )
 
+@expenses_router.get("/{expense_id}", response_model=ExpenseResponse)
+async def get_expense(expense_id: int,  db: AsyncSession = Depends(get_db)):
+    return await get_expense_db(expense_id, db)
+
+@expenses_router.get("user/{user_id}", response_model=list[ExpenseResponse])
+async def get_expenses(
+    user_id: int,
+    pagination: PaginationDep,
+    db: AsyncSession = Depends(get_db),
+    year: int | None = Query(None, ge=2000, le=2100),
+    month: int | None = Query(None, ge=1, le=12)
+):
+    return await get_expenses_by_user_db(db=db, pagination=pagination, user_id=user_id, year=year, month=month)
+
 
 @expenses_router.post("/", response_model=ExpenseResponse, status_code=status.HTTP_201_CREATED)
-def create_expense(expense_data: ExpenseCreate, telegram_id: int):
-    # Here you would typically save the new expense to the database
-    return {
-        "id": 999,
-        "telegram_id": telegram_id or 123,
-        "category_id": expense_data.category_id,
-        "amount": expense_data.amount,
-        "description": expense_data.description,
-        "created_at": "2025-12-31T23:59:59",
-    }
+async def create_expense(expense_data: ExpenseCreate, db: AsyncSession = Depends(get_db)):
+    return await add_expense_db(expense_data, db)
+
 
 @expenses_router.patch("/{expense_id}", response_model=ExpenseResponse)
 def update_expense(expense_id: int, update_data: ExpenseUpdate):
