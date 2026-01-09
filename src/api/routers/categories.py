@@ -1,12 +1,10 @@
-from typing import Annotated
-
 from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.dependencies import PaginationDep
-from db.crud.categories import create_category_db, update_category_db, get_category_by_user_db
-from db.deps import get_db
-from schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
+from src.api.dependencies import PaginationDep
+from src.db.crud.categories import create_category_db, update_category_db, get_category_by_user_db
+from src.db.deps import get_db
+from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
 
 category_router = APIRouter(
     prefix="/categories",

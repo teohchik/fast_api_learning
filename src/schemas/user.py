@@ -9,9 +9,9 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
+    username: str | None = Field(None, max_length=255)
     first_name: str | None = Field(None, min_length=1, max_length=255)
     last_name: str | None = Field(None, max_length=255)
-    username: str | None = Field(None, max_length=255)
 
 
 class UserResponse(BaseModel):

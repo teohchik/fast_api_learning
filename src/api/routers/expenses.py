@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette import status
 
-from schemas.expense import (
+from src.schemas.expense import (
     ExpenseCreate,
     ExpenseUpdate,
     ExpenseResponse,
@@ -11,11 +11,6 @@ expenses_router = APIRouter(
     prefix="/expenses",
     tags=["Expenses"]
 )
-
-
-@expenses_router.get("/{telegram_id}", response_model=list[ExpenseResponse])
-def get_expenses_by_user(telegram_id: int):
-    return "expenses by user"
 
 
 @expenses_router.post("/", response_model=ExpenseResponse, status_code=status.HTTP_201_CREATED)

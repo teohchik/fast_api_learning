@@ -1,30 +1,22 @@
-from typing import Any, Coroutine
-
+from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models.users import User
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, NoResultFound
-from fastapi import HTTPException, status
-
-from db.repositories.users import UsersRepository
-from schemas.user import UserCreate, UserUpdate, UserResponse
-from schemas.user import UserResponse
+from src.db.repositories.users import UsersRepository
+from src.schemas.user import UserCreate, UserUpdate
+from src.schemas.user import UserResponse
 
 
 async def get_user_db(user_id, db: AsyncSession) -> UserResponse:
     user_response = await UsersRepository(db).get_one_or_none(id=user_id)
     if not user_response:
         raise HTTPException(status_code=404, detail="User not found")
-    return UserResponse.model_validate(user_response)
+    return user_response
 
 
 async def get_users_db(pagination, db: AsyncSession) -> list[UserResponse]:
     users_response = await UsersRepository(db).get_by_filters(pagination=pagination)
-    return [
-        UserResponse.model_validate(user)
-        for user in users_response
-    ]
+    return users_response
 
 
 async def add_user_db(new_user_data: UserCreate, db: AsyncSession) -> UserResponse:
@@ -40,7 +32,7 @@ async def add_user_db(new_user_data: UserCreate, db: AsyncSession) -> UserRespon
             detail="User with this telegram_id already exists."
         )
 
-    return UserResponse.model_validate(db_user)
+    return db_user
 
 
 async def update_user_db(user_id: int, update_data: UserUpdate, db: AsyncSession) -> UserResponse:
@@ -51,4 +43,4 @@ async def update_user_db(user_id: int, update_data: UserUpdate, db: AsyncSession
         await db.rollback()
         raise HTTPException(status_code=404, detail="Category not found")
 
-    return UserResponse.model_validate(db_user)
+    return db_user

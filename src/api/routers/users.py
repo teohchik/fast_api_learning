@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.dependencies import PaginationDep
-from db.crud.users import add_user_db, update_user_db, get_users_db, get_user_db
-from db.deps import get_db
-from schemas.user import UserResponse, UserCreate, UserUpdate
+from src.api.dependencies import PaginationDep
+from src.db.crud.users import add_user_db, update_user_db, get_users_db, get_user_db
+from src.db.deps import get_db
+from src.schemas.user import UserResponse, UserCreate, UserUpdate
 
 users_router = APIRouter(
     prefix="/users",

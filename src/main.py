@@ -1,11 +1,15 @@
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 
-from api.routers.categories import category_router
-from api.routers.expenses import expenses_router
-from api.routers.users import users_router
-from db.init_db import init_db
+sys.path.append(str(Path(__file__).parent.parent))
+
+from src.api.routers.categories import category_router
+from src.api.routers.expenses import expenses_router
+from src.api.routers.users import users_router
+from src.db.init_db import init_db
 
 
 @asynccontextmanager
