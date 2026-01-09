@@ -10,7 +10,7 @@ class CategoriesRepository(BaseRepository):
 
     async def get_by_user_id(self, user_id: int, pagination: PaginationParams | None = None):
         return await self.get_by_filters(
-            filters={"user_id": user_id},
             pagination=pagination,
             order_by=Category.created_at,
+            user_id=user_id,
         )

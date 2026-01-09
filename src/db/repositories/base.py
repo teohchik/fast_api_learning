@@ -22,10 +22,7 @@ class BaseRepository:
             return None
         return self.schema.model_validate(result)
 
-    async def get_by_filters(
-            self, filters: dict | None = None,
-            pagination: PaginationParams | None = None,
-            order_by=None):
+    async def get_by_filters(self, pagination: PaginationParams | None = None, order_by=None, **filters):
         stmt = select(self.model)
         if filters:
             stmt = stmt.filter_by(**filters)
