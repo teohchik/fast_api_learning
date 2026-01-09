@@ -15,7 +15,7 @@ async def get_user_db(user_id, db: AsyncSession) -> UserResponse:
 
 
 async def get_users_db(pagination, db: AsyncSession) -> list[UserResponse]:
-    users_response = await UsersRepository(db).get_by_filters(pagination=pagination)
+    users_response = await UsersRepository(db).get_by_filters(pagination=pagination, order_by=UsersRepository.model.id)
     return users_response
 
 
