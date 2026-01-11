@@ -17,3 +17,4 @@ class CategoryResponse(BaseModel):
     title: str
     user_id: int
     created_at: datetime
+    visible: bool
