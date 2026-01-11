@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import select
 
-from src.api.dependencies import PaginationParams
+from src.api.deps import PaginationParams
 from src.db.models import Expense
 from src.db.repositories.base import BaseRepository
 from src.schemas.expense import ExpenseResponse
