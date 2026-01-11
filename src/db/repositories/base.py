@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from src.api.dependencies import PaginationParams
+from src.api.deps import PaginationParams
 
 
 class BaseRepository:
