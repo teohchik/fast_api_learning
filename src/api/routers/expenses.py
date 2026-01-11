@@ -1,14 +1,10 @@
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-from starlette import status
+from fastapi import APIRouter, Query, status
 
-from src.api.dependencies import PaginationDep
-from src.db.crud.expenses import add_expense_db, get_expenses_by_user_db, get_expense_db
-from src.db.deps import get_db
+from src.api.deps import PaginationDep
+from src.db.crud.expenses import get_expense_db, get_expenses_by_user_db, add_expense_db
+from src.db.deps import DBDep
 from src.schemas.expense import (
-    ExpenseCreate,
-    ExpenseUpdate,
-    ExpenseResponse,
+    ExpenseResponse, ExpenseCreate, ExpenseUpdate,
 )
 
 expenses_router = APIRouter(
@@ -17,14 +13,16 @@ expenses_router = APIRouter(
 )
 
 @expenses_router.get("/{expense_id}", response_model=ExpenseResponse)
-async def get_expense(expense_id: int,  db: AsyncSession = Depends(get_db)):
+async def get_expense(
+        expense_id: int,
+        db: DBDep):
     return await get_expense_db(expense_id, db)
 
 @expenses_router.get("user/{user_id}", response_model=list[ExpenseResponse])
 async def get_expenses(
     user_id: int,
     pagination: PaginationDep,
-    db: AsyncSession = Depends(get_db),
+    db: DBDep,
     year: int | None = Query(None, ge=2000, le=2100),
     month: int | None = Query(None, ge=1, le=12)
 ):
@@ -32,16 +30,21 @@ async def get_expenses(
 
 
 @expenses_router.post("/", response_model=ExpenseResponse, status_code=status.HTTP_201_CREATED)
-async def create_expense(expense_data: ExpenseCreate, db: AsyncSession = Depends(get_db)):
+async def create_expense(
+        expense_data: ExpenseCreate,
+        db: DBDep
+):
     return await add_expense_db(expense_data, db)
 
 
-@expenses_router.patch("/{expense_id}", response_model=ExpenseResponse)
-def update_expense(expense_id: int, update_data: ExpenseUpdate):
-    # Here you would typically update the expense in the database
-    return update_data
+# @expenses_router.patch("/{expense_id}", response_model=ExpenseResponse)
+# def update_expense(
+#         expense_id: int,
+#         update_data: ExpenseUpdate):
+#     # Here you would typically update the expense in the database
+#     return update_data
 
-@expenses_router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_expense(expense_id: int):
-    # Here you would typically delete the expense from the database
-    return {"message": f"Expense with id {expense_id} deleted"}
+# @expenses_router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
+# def delete_expense(expense_id: int):
+#     # Here you would typically delete the expense from the database
+#     return {"message": f"Expense with id {expense_id} deleted"}
