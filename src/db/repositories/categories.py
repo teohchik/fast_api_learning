@@ -4,12 +4,12 @@ from sqlalchemy.exc import NoResultFound
 from src.api.deps import PaginationParams
 from src.db.models.categories import Category
 from src.db.repositories.base import BaseRepository
-from src.schemas.category import CategoryResponse
+from src.db.repositories.mappers.mappers import CategoryDataMapper
 
 
 class CategoriesRepository(BaseRepository):
     model = Category
-    schema = CategoryResponse
+    mapper = CategoryDataMapper
 
     async def get_by_user_id(self, user_id: int, pagination: PaginationParams | None = None):
         return await self.get_by_filters(
@@ -23,12 +23,11 @@ class CategoriesRepository(BaseRepository):
         query = select(self.model).where((self.model.id == category_id) & (self.model.visible == True))
 
         result = await self.session.execute(query)
-        db_obj = result.scalar_one_or_none()
+        model = result.scalar_one_or_none()
 
-        if not db_obj:
+        if not model:
             raise NoResultFound(f"Category {category_id} not found")
 
-        # Soft delete
-        db_obj.visible = False
-        await self.session.flush()  # commit робиться зовні
-        return self.schema.model_validate(db_obj)
+        model.visible = False
+        await self.session.flush()
+        return self.mapper.map_to_domain_entity(model)

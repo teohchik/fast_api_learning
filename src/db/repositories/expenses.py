@@ -5,12 +5,12 @@ from sqlalchemy import select
 from src.api.deps import PaginationParams
 from src.db.models import Expense
 from src.db.repositories.base import BaseRepository
-from src.schemas.expense import ExpenseResponse
+from src.db.repositories.mappers.mappers import ExpenseDataMapper
 
 
 class ExpensesRepository(BaseRepository):
     model = Expense
-    schema = ExpenseResponse
+    mapper = ExpenseDataMapper
 
     async def get_by_user_and_date(
             self,
@@ -32,7 +32,8 @@ class ExpensesRepository(BaseRepository):
                     .offset((pagination.page - 1) * pagination.per_page))
 
         results = await self.session.execute(stmt)
-        return [self.schema.model_validate(result) for result in results.scalars().all()]
+        results = results.scalars().all()
+        return [self.mapper.map_to_domain_entity(model) for model in results]
 
     async def get_last_month_expenses(self, user_id: int, pagination: PaginationParams | None = None):
         now = datetime.now()

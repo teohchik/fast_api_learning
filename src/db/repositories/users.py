@@ -1,8 +1,8 @@
 from src.db.models.users import User
 from src.db.repositories.base import BaseRepository
-from src.schemas.user import UserResponse
+from src.db.repositories.mappers.mappers import UserDataMapper
 
 
 class UsersRepository(BaseRepository):
     model = User
-    schema = UserResponse
+    mapper = UserDataMapper

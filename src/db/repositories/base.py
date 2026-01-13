@@ -3,11 +3,12 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 from src.api.deps import PaginationParams
+from src.db.repositories.mappers.base import DataMapper
 
 
 class BaseRepository:
     model = None
-    schema: BaseModel = None
+    mapper: DataMapper = None
 
     def __init__(self, session):
         self.session = session
@@ -16,11 +17,11 @@ class BaseRepository:
         stmt = select(self.model)
         if filters:
             stmt = stmt.filter_by(**filters)
-        result = await self.session.execute(stmt)
-        result = result.scalar_one_or_none()
-        if result is None:
+        db_obj = await self.session.execute(stmt)
+        db_obj = db_obj.scalar_one_or_none()
+        if db_obj is None:
             return None
-        return self.schema.model_validate(result)
+        return self.mapper.map_to_domain_entity(db_obj)
 
     async def get_by_filters(self, pagination: PaginationParams | None = None, order_by=None, **filters):
         stmt = select(self.model)
@@ -34,14 +35,14 @@ class BaseRepository:
                 .limit(pagination.per_page)
                 .offset((pagination.page - 1) * pagination.per_page)
             )
-        results = await self.session.execute(stmt)
-        return [self.schema.model_validate(result) for result in results.scalars().all()]
+        db_objs = await self.session.execute(stmt)
+        return [self.mapper.map_to_domain_entity(db_obj) for db_obj in db_objs.scalars().all()]
 
     async def add(self, data: BaseModel):
         db_obj = self.model(**data.model_dump())
         self.session.add(db_obj)
         await self.session.flush()
-        return self.schema.model_validate(db_obj)
+        return self.mapper.map_to_domain_entity(db_obj)
 
     async def edit_by_id(self, data: BaseModel, obj_id: int):
         query = select(self.model).where(self.model.id == obj_id)
@@ -54,4 +55,4 @@ class BaseRepository:
             setattr(db_obj, key, value)
 
         await self.session.flush()
-        return self.schema.model_validate(db_obj)
+        return self.mapper.map_to_domain_entity(db_obj)
