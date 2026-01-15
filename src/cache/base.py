@@ -12,7 +12,11 @@ class BaseCacheKeyBuilder:
 
         params = request.query_params
 
-        user_id = params.get("user_id")
+        path_params = request.scope.get("path_params", {})
+        if "user_id" in path_params:
+            user_id = path_params["user_id"]
+        else:
+            user_id = params.get("user_id")
         if user_id is None:
             return f"{cls.prefix}:no-user"
 
@@ -20,7 +24,6 @@ class BaseCacheKeyBuilder:
         per_page = params.get("per_page")
         if page is None or per_page is None:
             return f"{cls.prefix}/user_id:{user_id}"
-
         return f"{cls.prefix}/user_id:{user_id}/page:{page}/per_page:{per_page}"
 
     @classmethod
