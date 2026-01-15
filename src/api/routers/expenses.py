@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, status, Request
+from fastapi_cache.decorator import cache
 
 from src.api.deps import PaginationDep
+from src.cache.expenses import ExpensesCacheKeyBuilder
 from src.db.crud.expenses import get_expense_db, get_expenses_by_user_db, add_expense_db
 from src.db.deps import DBDep
 from src.schemas.expense import (
@@ -19,10 +21,12 @@ async def get_expense(
     return await get_expense_db(expense_id, db)
 
 @expenses_router.get("user/{user_id}", response_model=list[ExpenseResponse])
+@cache(expire=300, key_builder=ExpensesCacheKeyBuilder.build)
 async def get_expenses(
     user_id: int,
     pagination: PaginationDep,
     db: DBDep,
+    request: Request,
     year: int | None = Query(None, ge=2000, le=2100),
     month: int | None = Query(None, ge=1, le=12)
 ):
@@ -34,6 +38,8 @@ async def create_expense(
         expense_data: ExpenseCreate,
         db: DBDep
 ):
+    response = await add_expense_db(expense_data, db)
+    await ExpensesCacheKeyBuilder.invalidate_by_pattern(response.user_id)
     return await add_expense_db(expense_data, db)
 
 
