@@ -1,5 +1,4 @@
 from fastapi import Request
-from fastapi_cache import FastAPICache
 
 
 class BaseCacheKeyBuilder:
@@ -8,27 +7,25 @@ class BaseCacheKeyBuilder:
     @classmethod
     def build(cls, *args, request: Request = None, **kwargs) -> str:
         if request is None:
-            return f"{cls.prefix}/unknown"
+            return f"{cls.prefix}:unknown"
 
-        params = request.query_params
-
-        path_params = request.scope.get("path_params", {})
-        if "user_id" in path_params:
-            user_id = path_params["user_id"]
-        else:
-            user_id = params.get("user_id")
+        user_id = cls._get_user_id(request)
         if user_id is None:
             return f"{cls.prefix}:no-user"
 
-        page = params.get("page")
-        per_page = params.get("per_page")
-        if page is None or per_page is None:
-            return f"{cls.prefix}/user_id:{user_id}"
-        return f"{cls.prefix}/user_id:{user_id}/page:{page}/per_page:{per_page}"
+        page = request.query_params.get("page")
+        per_page = request.query_params.get("per_page")
+
+        if page and per_page:
+            return f"{cls.prefix}:user:{user_id}:page:{page}:per:{per_page}"
+
+        return f"{cls.prefix}:user:{user_id}"
+
+    @staticmethod
+    def _get_user_id(request: Request):
+        path_params = request.scope.get("path_params", {})
+        return path_params.get("user_id") or request.query_params.get("user_id")
 
     @classmethod
-    async def invalidate_by_pattern(cls, user_id):
-        redis = FastAPICache.get_backend().redis
-        async for key in redis.scan_iter(match=f"{cls.prefix}/user_id:{user_id}*"):
-            print("Deleting cache key:", key)
-            await redis.delete(key)
+    def generate_pattern(cls, user_id) -> str:
+        return f"{cls.prefix}:user:{user_id}*"
