@@ -17,7 +17,7 @@ category_router = APIRouter(
 @category_router.get("/",
                      response_model=list[CategoryResponse],
                      status_code=status.HTTP_200_OK)
-@cache(expire=300, key_builder=CategoryCacheKeyBuilder.build)
+@cache(expire=CategoryCacheKeyBuilder.expire, key_builder=CategoryCacheKeyBuilder.build)
 async def get_categories_by_user(
         pagination: PaginationDep,
         user_id: int,
