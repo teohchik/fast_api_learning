@@ -3,7 +3,8 @@ from fastapi_cache.decorator import cache
 
 from src.api.deps import PaginationDep
 from src.cache.expenses import ExpensesCacheKeyBuilder
-from src.db.crud.expenses import get_expense_db, get_expenses_by_user_db, add_expense_db
+from src.db.crud.expenses import get_expense_db, get_expenses_by_user_db, add_expense_db, update_expense_db, \
+    delete_expense_db
 from src.db.deps import DBDep
 from src.init import redis_manager
 from src.schemas.expense import (
@@ -22,7 +23,7 @@ async def get_expense(
     return await get_expense_db(expense_id, db)
 
 @expenses_router.get("user/{user_id}", response_model=list[ExpenseResponse])
-@cache(expire=300, key_builder=ExpensesCacheKeyBuilder.build)
+@cache(expire=ExpensesCacheKeyBuilder.expire, key_builder=ExpensesCacheKeyBuilder.build)
 async def get_expenses(
     user_id: int,
     pagination: PaginationDep,
@@ -41,17 +42,20 @@ async def create_expense(
 ):
     response = await add_expense_db(expense_data, db)
     await redis_manager.scan_delete(pattern=ExpensesCacheKeyBuilder.generate_pattern(response.user_id))
-    return await add_expense_db(expense_data, db)
+    return response
 
 
-# @expenses_router.patch("/{expense_id}", response_model=ExpenseResponse)
-# def update_expense(
-#         expense_id: int,
-#         update_data: ExpenseUpdate):
-#     # Here you would typically update the expense in the database
-#     return update_data
+@expenses_router.patch("/", response_model=ExpenseResponse)
+async def update_expense(
+        expense_id: int,
+        update_data: ExpenseUpdate,
+        db: DBDep):
+    response = await update_expense_db(expense_id, update_data, db)
+    await redis_manager.scan_delete(pattern=ExpensesCacheKeyBuilder.generate_pattern(response.user_id))
+    return response
 
-# @expenses_router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
-# def delete_expense(expense_id: int):
-#     # Here you would typically delete the expense from the database
-#     return {"message": f"Expense with id {expense_id} deleted"}
+@expenses_router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_expense(expense_id: int, db: DBDep):
+    user_id = await delete_expense_db(expense_id, db)
+    await redis_manager.scan_delete(pattern=ExpensesCacheKeyBuilder.generate_pattern(user_id))
+    return {"message": "Expense deleted successfully"}
