@@ -5,6 +5,7 @@ from src.api.deps import PaginationDep
 from src.cache.expenses import ExpensesCacheKeyBuilder
 from src.db.crud.expenses import get_expense_db, get_expenses_by_user_db, add_expense_db
 from src.db.deps import DBDep
+from src.init import redis_manager
 from src.schemas.expense import (
     ExpenseResponse, ExpenseCreate, ExpenseUpdate,
 )
@@ -39,7 +40,7 @@ async def create_expense(
         db: DBDep
 ):
     response = await add_expense_db(expense_data, db)
-    await ExpensesCacheKeyBuilder.invalidate_by_pattern(response.user_id)
+    await redis_manager.scan_delete(pattern=ExpensesCacheKeyBuilder.generate_pattern(response.user_id))
     return await add_expense_db(expense_data, db)
 
 

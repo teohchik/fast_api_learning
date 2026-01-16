@@ -5,6 +5,7 @@ from src.api.deps import PaginationDep
 from src.cache.categories import CategoryCacheKeyBuilder
 from src.db.crud.categories import create_category_db, update_category_db, get_category_by_user_db, delete_category_db
 from src.db.deps import get_db, DBDep
+from src.init import redis_manager
 from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
 
 category_router = APIRouter(
@@ -33,7 +34,7 @@ async def create_category(
         new_category_data: CategoryCreate,
         db: DBDep):
     response = await create_category_db(new_category_data, db)
-    await CategoryCacheKeyBuilder.invalidate_by_pattern(user_id=response.user_id)
+    await redis_manager.scan_delete(pattern=CategoryCacheKeyBuilder.generate_pattern(response.user_id))
     return response
 
 
@@ -45,7 +46,7 @@ async def update_category(
         update_data: CategoryUpdate,
         db: DBDep):
     response = await update_category_db(category_id, update_data, db)
-    await CategoryCacheKeyBuilder.invalidate_by_pattern(user_id=response.user_id)
+    await redis_manager.scan_delete(pattern=CategoryCacheKeyBuilder.generate_pattern(response.user_id))
     return response
 
 
@@ -54,5 +55,5 @@ async def delete_category(
         category_id: int,
         db: DBDep):
     response = await delete_category_db(category_id, db)
-    await CategoryCacheKeyBuilder.invalidate_by_pattern(user_id=response.user_id)
+    await redis_manager.scan_delete(pattern=CategoryCacheKeyBuilder.generate_pattern(response.user_id))
     return response
