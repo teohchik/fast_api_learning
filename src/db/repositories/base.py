@@ -56,3 +56,14 @@ class BaseRepository:
 
         await self.session.flush()
         return self.mapper.map_to_domain_entity(db_obj)
+
+    async def delete_by_id(self, obj_id: int) -> None:
+        query = select(self.model).where(self.model.id == obj_id)
+        result = await self.session.execute(query)
+        db_obj = result.scalar_one_or_none()
+        if not db_obj:
+            raise NoResultFound(f"{self.model.__name__} with id {obj_id} not found")
+        user_id = db_obj.user_id
+
+        await self.session.delete(db_obj)
+        return user_id
