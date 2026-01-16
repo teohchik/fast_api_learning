@@ -19,6 +19,12 @@ class RedisManager:
     async def delete_value(self, key: str):
         await self.redis.delete(key)
 
+
+    async def scan_delete(self, pattern: str):
+        async for key in self.redis.scan_iter(match=pattern):
+            print(f"Deleting key: {key.decode('utf-8')}")
+            await self.redis.delete(key)
+
     async def disconnect(self):
         if self.redis:
             await self.redis.close()
