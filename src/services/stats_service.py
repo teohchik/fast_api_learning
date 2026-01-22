@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+from decimal import Decimal
 
 from sqlalchemy import select, func
 
@@ -19,10 +20,11 @@ def get_previous_month_range():
     )
 
 
-async def send_stats_to_all_users():
+async def send_stats_to_all_users() -> dict[int, list[tuple[str, Decimal]]]:
     month_start, month_end = get_previous_month_range()
     async with DBManager(session_factory=AsyncSessionLocalNullPool) as db:
         users = await db.users.get_users()
+        response = {}
 
         for user in users:
             count_stmt = (
@@ -37,7 +39,6 @@ async def send_stats_to_all_users():
             expenses_count = await db.session.scalar(count_stmt)
 
             if expenses_count < 2:
-                print(f"User {user.id} has no expenses")
                 continue
 
             stats_stmt = (
@@ -56,8 +57,6 @@ async def send_stats_to_all_users():
 
             result = await db.session.execute(stats_stmt)
             stats = result.all()
+            response[user.telegram_id] = stats
 
-            # -------- 3. Тут відправка статистики --------
-            # send_message(user.telegram_id, stats)
-            for stat in stats:
-                print(f"Category: {stat.title}, Total: {stat.total}")
+        return response
