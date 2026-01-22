@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
@@ -43,6 +45,12 @@ class BaseRepository:
         self.session.add(db_obj)
         await self.session.flush()
         return self.mapper.map_to_domain_entity(db_obj)
+
+    async def add_bulk(self, data_list: Iterable[BaseModel]):
+        db_objs = [self.model(**data.model_dump()) for data in data_list]
+        self.session.add_all(db_objs)
+        await self.session.flush()
+        return [self.mapper.map_to_domain_entity(db_obj) for db_obj in db_objs]
 
     async def edit_by_id(self, data: BaseModel, obj_id: int):
         query = select(self.model).where(self.model.id == obj_id)
