@@ -1,0 +1,81 @@
+[
+  { "title": "Car", "user_id": 1 },
+  { "title": "Food", "user_id": 1 },
+  { "title": "Travel", "user_id": 1 },
+
+  { "title": "Home", "user_id": 2 },
+  { "title": "Sport", "user_id": 2 },
+  { "title": "Tech", "user_id": 2 },
+
+  { "title": "Health", "user_id": 3 },
+  { "title": "Education", "user_id": 3 },
+  { "title": "Entertainment", "user_id": 3 },
+
+  { "title": "Finance", "user_id": 4 },
+  { "title": "Car", "user_id": 4 },
+  { "title": "Food", "user_id": 4 },
+
+  { "title": "Travel", "user_id": 5 },
+  { "title": "Home", "user_id": 5 },
+  { "title": "Sport", "user_id": 5 },
+
+  { "title": "Tech", "user_id": 6 },
+  { "title": "Health", "user_id": 6 },
+  { "title": "Education", "user_id": 6 },
+
+  { "title": "Entertainment", "user_id": 7 },
+  { "title": "Finance", "user_id": 7 },
+  { "title": "Car", "user_id": 7 },
+
+  { "title": "Food", "user_id": 8 },
+  { "title": "Travel", "user_id": 8 },
+  { "title": "Home", "user_id": 8 },
+
+  { "title": "Sport", "user_id": 9 },
+  { "title": "Tech", "user_id": 9 },
+  { "title": "Health", "user_id": 9 },
+
+  { "title": "Education", "user_id": 10 },
+  { "title": "Entertainment", "user_id": 10 },
+  { "title": "Finance", "user_id": 10 },
+
+  { "title": "Car", "user_id": 11 },
+  { "title": "Food", "user_id": 11 },
+  { "title": "Travel", "user_id": 11 },
+
+  { "title": "Home", "user_id": 12 },
+  { "title": "Sport", "user_id": 12 },
+  { "title": "Tech", "user_id": 12 },
+
+  { "title": "Health", "user_id": 13 },
+  { "title": "Education", "user_id": 13 },
+  { "title": "Entertainment", "user_id": 13 },
+
+  { "title": "Finance", "user_id": 14 },
+  { "title": "Car", "user_id": 14 },
+  { "title": "Food", "user_id": 14 },
+
+  { "title": "Travel", "user_id": 15 },
+  { "title": "Home", "user_id": 15 },
+  { "title": "Sport", "user_id": 15 },
+
+  { "title": "Tech", "user_id": 16 },
+  { "title": "Health", "user_id": 16 },
+  { "title": "Education", "user_id": 16 },
+
+  { "title": "Entertainment", "user_id": 17 },
+  { "title": "Finance", "user_id": 17 },
+  { "title": "Car", "user_id": 17 },
+
+  { "title": "Food", "user_id": 18 },
+  { "title": "Travel", "user_id": 18 },
+  { "title": "Home", "user_id": 18 },
+
+  { "title": "Sport", "user_id": 19 },
+  { "title": "Tech", "user_id": 19 },
+  { "title": "Health", "user_id": 19 },
+
+  { "title": "Education", "user_id": 20 },
+  { "title": "Entertainment", "user_id": 20 },
+  { "title": "Finance", "user_id": 20 }
+]

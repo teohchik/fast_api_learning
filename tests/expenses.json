@@ -1,0 +1,70 @@
+[
+  { "user_id": 2, "category_id": 5, "amount": 19.80, "description": "Protein bar" },
+  { "user_id": 2, "category_id": 5, "amount": 42.00, "description": "Gym monthly fee" },
+  { "user_id": 2, "category_id": 8, "amount": 260.00, "description": "Weekend trip hotel" },
+
+  { "user_id": 3, "category_id": 9, "amount": 11.40, "description": "Energy drink" },
+
+  { "user_id": 4, "category_id": 12, "amount": 75.00, "description": "Taxi rides" },
+  { "user_id": 4, "category_id": 12, "amount": 18.20, "description": "Parking fee" },
+  { "user_id": 4, "category_id": 14, "amount": 44.90, "description": "Car wash" },
+  { "user_id": 4, "category_id": 11, "amount": 310.00, "description": "Car insurance" },
+  { "user_id": 4, "category_id": 11, "amount": 55.00, "description": "Fuel refill" },
+  { "user_id": 4, "category_id": 13, "amount": 23.50, "description": "Fast food lunch" },
+
+  { "user_id": 5, "category_id": 15, "amount": 210.00, "description": "Short vacation booking" },
+  { "user_id": 5, "category_id": 15, "amount": 32.40, "description": "Museum tickets" },
+
+  { "user_id": 6, "category_id": 18, "amount": 9.20, "description": "Notebook" },
+  { "user_id": 6, "category_id": 18, "amount": 15.00, "description": "Office supplies" },
+  { "user_id": 6, "category_id": 17, "amount": 4.80, "description": "Bus ticket" },
+
+  { "user_id": 7, "category_id": 21, "amount": 120.00, "description": "Shoes repair" },
+  { "user_id": 7, "category_id": 22, "amount": 65.30, "description": "Weekly groceries" },
+  { "user_id": 7, "category_id": 22, "amount": 18.70, "description": "Bakery" },
+  { "user_id": 7, "category_id": 23, "amount": 240.00, "description": "New headphones" },
+
+  { "user_id": 8, "category_id": 24, "amount": 29.99, "description": "Phone case" },
+
+  { "user_id": 9, "category_id": 27, "amount": 6.40, "description": "Coffee" },
+  { "user_id": 9, "category_id": 27, "amount": 12.90, "description": "Sandwich" },
+  { "user_id": 9, "category_id": 28, "amount": 99.00, "description": "Online course" },
+  { "user_id": 9, "category_id": 27, "amount": 3.20, "description": "Water bottle refill" },
+
+  { "user_id": 10, "category_id": 30, "amount": 58.00, "description": "Programming book" },
+  { "user_id": 10, "category_id": 30, "amount": 21.40, "description": "Notebook" },
+
+  { "user_id": 11, "category_id": 33, "amount": 320.00, "description": "Car service" },
+  { "user_id": 11, "category_id": 31, "amount": 44.50, "description": "Fuel refill" },
+
+  { "user_id": 12, "category_id": 35, "amount": 180.00, "description": "Office chair" },
+  { "user_id": 12, "category_id": 36, "amount": 12.99, "description": "Music subscription" },
+  { "user_id": 12, "category_id": 36, "amount": 12.99, "description": "Music subscription renewal" },
+
+  { "user_id": 13, "category_id": 37, "amount": 9.99, "description": "Movie rental" },
+  { "user_id": 13, "category_id": 37, "amount": 14.20, "description": "Cinema popcorn" },
+  { "user_id": 13, "category_id": 38, "amount": 65.00, "description": "Concert ticket" },
+  { "user_id": 13, "category_id": 39, "amount": 42.30, "description": "Restaurant dinner" },
+  { "user_id": 13, "category_id": 39, "amount": 18.00, "description": "Lunch cafe" },
+
+  { "user_id": 14, "category_id": 41, "amount": 99.00, "description": "Bluetooth speaker" },
+
+  { "user_id": 15, "category_id": 43, "amount": 140.00, "description": "Fuel for trip" },
+  { "user_id": 15, "category_id": 43, "amount": 18.50, "description": "Road snacks" },
+  { "user_id": 15, "category_id": 45, "amount": 22.90, "description": "Vitamins" },
+
+  { "user_id": 16, "category_id": 47, "amount": 35.00, "description": "Blood test" },
+
+  { "user_id": 17, "category_id": 49, "amount": 24.99, "description": "Video game" },
+  { "user_id": 17, "category_id": 49, "amount": 7.50, "description": "Game add-on" },
+  { "user_id": 17, "category_id": 50, "amount": 5.20, "description": "Mobile app coins" },
+
+  { "user_id": 18, "category_id": 52, "amount": 46.80, "description": "Cleaning supplies" },
+
+  { "user_id": 19, "category_id": 55, "amount": 33.00, "description": "Gym gloves" },
+  { "user_id": 19, "category_id": 55, "amount": 19.90, "description": "Protein shake" },
+  { "user_id": 19, "category_id": 56, "amount": 210.00, "description": "Smartwatch repair" },
+
+  { "user_id": 20, "category_id": 58, "amount": 89.00, "description": "Online workshop" },
+  { "user_id": 20, "category_id": 58, "amount": 15.00, "description": "Workshop materials" }
+]
