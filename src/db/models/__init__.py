@@ -1,3 +1,3 @@
-from .users import User
-from .categories import Category
-from .expenses import Expense
+from src.db.models.users import User
+from src.db.models.categories import Category
+from src.db.models.expenses import Expense
