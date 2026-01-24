@@ -1,12 +1,14 @@
+import asyncio
 import json
 
 import pytest
 import pytest_asyncio
+from asgi_lifespan import LifespanManager
 from httpx import AsyncClient, ASGITransport
 from src.config.settings import settings
 from src.db.base import Base
 from src.db.db_manager import DBManager
-from src.db.session import engine_null_pool, AsyncSessionLocalNullPool
+from src.db.session import AsyncSessionLocalNullPool, engine
 
 from src.db.models import *
 from src.main import app
@@ -15,7 +17,7 @@ from src.schemas.expense import ExpenseCreate
 from src.schemas.user import UserCreate
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope="function")
 async def db():
     async with DBManager(session_factory=AsyncSessionLocalNullPool) as db:
         yield db
@@ -28,7 +30,7 @@ def check_test_mode():
 
 @pytest.fixture(autouse=True, scope="session")
 async def setup_database(check_test_mode):
-    async with engine_null_pool.begin() as conn:
+    async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
@@ -57,8 +59,14 @@ async def ac():
         yield ac
 
 
-@pytest.fixture(autouse=True, scope="session")
-async def register_user(ac, setup_database):
-    resp = await ac.post(url='/users/', json={"telegram_id": 543153452346, "username": "test1_user",
-                                              "first_name": "Test User", "last_name": "Test User"})
-    assert resp.status_code == 201
+# @pytest_asyncio.fixture(scope="session", autouse=True)
+# async def init_test_cache():
+#     from fastapi_cache import FastAPICache
+#     from fastapi_cache.backends.inmemory import InMemoryBackend
+#
+#     FastAPICache.init(InMemoryBackend(), prefix="test:fastapi-cache")
+# @pytest.fixture(autouse=True, scope="session")
+# async def register_user(ac, setup_database):
+#     resp = await ac.post(url='/users/', json={"telegram_id": 543153452346, "username": "test1_user",
+#                                               "first_name": "Test User", "last_name": "Test User"})
+#     assert resp.status_code == 201
