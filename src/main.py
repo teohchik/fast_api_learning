@@ -7,10 +7,10 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.backends.redis import RedisBackend
 
-from src.config.settings import settings
 
 sys.path.append(str(Path(__file__).parent.parent))
 
+from src.config.settings import settings
 from src.api.routers.categories import category_router
 from src.api.routers.expenses import expenses_router
 from src.api.routers.users import users_router
