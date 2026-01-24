@@ -3,7 +3,8 @@ from fastapi_cache.decorator import cache
 
 from src.api.deps import PaginationDep
 from src.cache.categories import CategoryCacheKeyBuilder
-from src.db.crud.categories import create_category_db, update_category_db, get_category_by_user_db, delete_category_db
+from src.db.crud.categories import create_category_db, update_category_db, get_category_by_user_db, delete_category_db, \
+    get_category_db
 from src.db.deps import get_db, DBDep
 from src.init import redis_manager
 from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
@@ -12,6 +13,11 @@ category_router = APIRouter(
     prefix="/categories",
     tags=["Categories"]
 )
+
+
+@category_router.get("/{category_id}", response_model=CategoryResponse)
+async def get_category(category_id: int, db: DBDep):
+    return await get_category_db(category_id, db)
 
 
 @category_router.get("/",
