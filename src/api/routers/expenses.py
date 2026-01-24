@@ -22,7 +22,7 @@ async def get_expense(
         db: DBDep):
     return await get_expense_db(expense_id, db)
 
-@expenses_router.get("user/{user_id}", response_model=list[ExpenseResponse])
+@expenses_router.get("/user/{user_id}", response_model=list[ExpenseResponse])
 @cache(expire=ExpensesCacheKeyBuilder.expire, key_builder=ExpensesCacheKeyBuilder.build)
 async def get_expenses(
     user_id: int,
