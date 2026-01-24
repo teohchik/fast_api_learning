@@ -59,14 +59,37 @@ async def ac():
         yield ac
 
 
-# @pytest_asyncio.fixture(scope="session", autouse=True)
-# async def init_test_cache():
-#     from fastapi_cache import FastAPICache
-#     from fastapi_cache.backends.inmemory import InMemoryBackend
-#
-#     FastAPICache.init(InMemoryBackend(), prefix="test:fastapi-cache")
-# @pytest.fixture(autouse=True, scope="session")
-# async def register_user(ac, setup_database):
-#     resp = await ac.post(url='/users/', json={"telegram_id": 543153452346, "username": "test1_user",
-#                                               "first_name": "Test User", "last_name": "Test User"})
-#     assert resp.status_code == 201
+user_counter = 0
+
+
+@pytest.fixture
+async def user(ac):
+    global user_counter
+    user_counter += 1
+    resp = await ac.post("/users/", json={
+        "telegram_id": 777000111 + user_counter,
+        "username": "fixture_user",
+        "first_name": "Fixture",
+        "last_name": "User"
+    })
+    return resp.json()
+
+
+@pytest.fixture
+async def category(ac, user):
+    resp = await ac.post("/categories/", json={
+        "title": "Fixture category",
+        "user_id": user["id"]
+    })
+    return resp.json()
+
+
+@pytest.fixture
+async def expense(ac, user, category):
+    resp = await ac.post("/expenses/", json={
+        "user_id": user["id"],
+        "category_id": category["id"],
+        "amount": 12.50,
+        "description": "Fixture expense"
+    })
+    return resp.json()
