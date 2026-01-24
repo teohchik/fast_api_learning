@@ -25,36 +25,19 @@ async def test_get_users(ac):
     assert "telegram_id" in response.json()[0]
 
 
-async def test_get_user_by_id(ac):
-    user = {
-        "telegram_id": 123123123,
-        "username": "temp",
-        "first_name": "Temp",
-        "last_name": "User"
-    }
-
-    r = await ac.post("/users/", json=user)
-    user_id = r.json()["id"]
-
-    url = f"/users/{user_id}"
+async def test_get_user_by_id(ac, user):
+    url = f"/users/{user['id']}"
     response = await ac.get(url=url)
     assert response.status_code == 200
     assert isinstance(response.json(), dict)
 
 
-async def test_update_user(ac):
-    response = await ac.post("/users/", json={
-        "telegram_id": 888777666,
-        "username": "fixture_user",
-        "first_name": "Fixture",
-        "last_name": "User"
-    })
-    new_user_id = response.json()["id"]
-    response = await ac.patch(f"/users/{new_user_id}",
+async def test_update_user(ac, user):
+    response = await ac.patch(f"/users/{user['id']}",
                               json={
                                   "username": "updated",
                                   "first_name": "User",
                                   "last_name": "User"})
     assert response.status_code == 200
-    updated = await ac.get(f"/users/{new_user_id}")
+    updated = await ac.get(f"/users/{user['id']}")
     assert updated.json()["username"] == "updated"
