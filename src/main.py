@@ -4,7 +4,10 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.backends.redis import RedisBackend
+
+from src.config.settings import settings
 
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -22,6 +25,9 @@ async def lifespan(app: FastAPI):
     yield
     await redis_manager.disconnect()
 
+
+if settings.MODE == "TEST":
+    FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(users_router)
