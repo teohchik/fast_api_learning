@@ -1,12 +1,13 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 
-from src.api.deps import PaginationDep
+from src.api.deps import PaginationDep, verify_bot_api_key
 from src.db.crud.users import add_user_db, update_user_db, get_users_db, get_user_db
 from src.db.deps import DBDep
 from src.schemas.user import UserResponse, UserCreate, UserUpdate
 
 users_router = APIRouter(
     prefix="/users",
+    dependencies=[Depends(verify_bot_api_key)],
     tags=["Users"]
 )
 

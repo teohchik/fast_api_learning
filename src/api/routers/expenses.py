@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Query, status, Request
+from fastapi import APIRouter, Query, status, Request, Depends
 from fastapi_cache.decorator import cache
 
-from src.api.deps import PaginationDep
+from src.api.deps import PaginationDep, verify_bot_api_key
 from src.cache.expenses import ExpensesCacheKeyBuilder
 from src.db.crud.expenses import get_expense_db, get_expenses_by_user_db, add_expense_db, update_expense_db, \
     delete_expense_db
@@ -13,6 +13,7 @@ from src.schemas.expense import (
 
 expenses_router = APIRouter(
     prefix="/expenses",
+    dependencies=[Depends(verify_bot_api_key)],
     tags=["Expenses"]
 )
 

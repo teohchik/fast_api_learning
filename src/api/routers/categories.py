@@ -1,7 +1,7 @@
-from fastapi import APIRouter, status, Request
+from fastapi import APIRouter, status, Request, Depends
 from fastapi_cache.decorator import cache
 
-from src.api.deps import PaginationDep
+from src.api.deps import PaginationDep, verify_bot_api_key
 from src.cache.categories import CategoryCacheKeyBuilder
 from src.db.crud.categories import create_category_db, update_category_db, get_category_by_user_db, delete_category_db, \
     get_category_db
@@ -11,6 +11,7 @@ from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdat
 
 category_router = APIRouter(
     prefix="/categories",
+    dependencies=[Depends(verify_bot_api_key)],
     tags=["Categories"]
 )
 

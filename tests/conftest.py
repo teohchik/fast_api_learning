@@ -51,8 +51,11 @@ async def setup_database(check_test_mode):
 
 @pytest_asyncio.fixture(scope="session")
 async def ac():
+    headers = {
+        "X-API-KEY": settings.API_KEY,
+    }
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+    async with AsyncClient(transport=transport, base_url="http://test", headers=headers) as ac:
         yield ac
 
 
