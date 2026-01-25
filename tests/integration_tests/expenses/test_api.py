@@ -1,6 +1,9 @@
 from datetime import datetime
 import pytest
 
+async def test_api_key_missing(ac, user):
+    response = await ac.get(url=f"/expenses/user/{user['id']}", headers={"X-API-KEY": "wrong-key"})
+    assert response.status_code == 403
 
 @pytest.mark.parametrize("user_id, category_id, amount, description, status_code", [
     pytest.param(1, 1, 3.75, "Grocery shopping", 201, id="valid_expense"),

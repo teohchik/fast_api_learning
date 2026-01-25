@@ -1,5 +1,8 @@
 import pytest
 
+async def test_api_key_missing(ac, category):
+    response = await ac.get(f"/categories/{category['id']}", headers={"X-API-KEY": "wrong-key"})
+    assert response.status_code == 403
 
 @pytest.mark.parametrize(
     "title, status_code",

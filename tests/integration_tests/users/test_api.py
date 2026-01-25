@@ -1,6 +1,11 @@
 import pytest
 
 
+async def test_api_key_missing(ac):
+    response = await ac.get(url="/users/", headers={"X-API-KEY": "wrong-key"})
+    assert response.status_code == 403
+
+
 @pytest.mark.parametrize("telegram_id, username, first_name, last_name, status_code", [
     pytest.param(574958603, "john_doe", "John", "Doe", 201, id="valid_user_1"),
     pytest.param(574958604, "jane_smith", "Jane", "Smith", 201, id="valid_user_2"),
@@ -13,6 +18,12 @@ async def test_post_user(telegram_id, username, first_name, last_name, status_co
 
     response = await ac.post(url=url, json=data)
     assert response.status_code == status_code
+    if status_code == 201:
+        url = f"/users/{response.json()['id']}"
+        user_response = await ac.get(url=url)
+        assert user_response.json()["username"] == response.json()["username"]
+        assert user_response.json()["first_name"] == response.json()["first_name"]
+
 
 
 async def test_get_users(ac):
