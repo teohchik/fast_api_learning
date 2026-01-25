@@ -6,14 +6,14 @@ from src.db.deps import DBDep
 from src.schemas.user import UserResponse, UserCreate, UserUpdate
 
 users_router = APIRouter(
-    prefix="/users",
-    dependencies=[Depends(verify_bot_api_key)],
-    tags=["Users"]
+    prefix="/users", dependencies=[Depends(verify_bot_api_key)], tags=["Users"]
 )
+
 
 @users_router.get("/{user_id}", response_model=UserResponse)
 async def get_user(user_id: int, db: DBDep):
     return await get_user_db(user_id, db)
+
 
 @users_router.get("/", response_model=list[UserResponse])
 async def get_users(pagination: PaginationDep, db: DBDep):

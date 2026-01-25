@@ -13,11 +13,11 @@ class ExpensesRepository(BaseRepository):
     mapper = ExpenseDataMapper
 
     async def get_by_user_and_date(
-            self,
-            user_id: int,
-            date_from: datetime | None = None,
-            date_to: datetime | None = None,
-            pagination: PaginationParams | None = None
+        self,
+        user_id: int,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+        pagination: PaginationParams | None = None,
     ):
         stmt = select(self.model).where(self.model.user_id == user_id)
 
@@ -27,15 +27,17 @@ class ExpensesRepository(BaseRepository):
             stmt = stmt.where(self.model.created_at < date_to)
 
         if pagination:
-            stmt = (stmt
-                    .limit(pagination.per_page)
-                    .offset((pagination.page - 1) * pagination.per_page))
+            stmt = stmt.limit(pagination.per_page).offset(
+                (pagination.page - 1) * pagination.per_page
+            )
 
         results = await self.session.execute(stmt)
         results = results.scalars().all()
         return [self.mapper.map_to_domain_entity(model) for model in results]
 
-    async def get_last_month_expenses(self, user_id: int, pagination: PaginationParams | None = None):
+    async def get_last_month_expenses(
+        self, user_id: int, pagination: PaginationParams | None = None
+    ):
         now = datetime.now()
         start_of_month = datetime(now.year, now.month, 1)
         if now.month == 12:
@@ -47,7 +49,7 @@ class ExpensesRepository(BaseRepository):
             user_id=user_id,
             date_from=start_of_month,
             date_to=start_of_next_month,
-            pagination=pagination
+            pagination=pagination,
         )
 
     async def get_expenses_for_month(self, user_id: int, year: int, month: int, pagination=None):
@@ -61,5 +63,5 @@ class ExpensesRepository(BaseRepository):
             user_id=user_id,
             date_from=start_of_month,
             date_to=start_of_next_month,
-            pagination=pagination
+            pagination=pagination,
         )

@@ -15,7 +15,9 @@ async def get_user_db(user_id, db: DBManager) -> UserResponse:
 
 
 async def get_users_db(pagination, db: DBManager) -> list[UserResponse]:
-    users_response = await db.users.get_by_filters(pagination=pagination, order_by=UsersRepository.model.id)
+    users_response = await db.users.get_by_filters(
+        pagination=pagination, order_by=UsersRepository.model.id
+    )
     return users_response
 
 
@@ -28,7 +30,7 @@ async def add_user_db(new_user_data: UserCreate, db: DBManager) -> UserResponse:
         print("IntegrityError occurred while adding a new user:", exc)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="User with this telegram_id already exists."
+            detail="User with this telegram_id already exists.",
         )
 
     return db_user

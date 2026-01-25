@@ -12,7 +12,9 @@ async def get_category_db(category_id: int, db: DBManager) -> CategoryResponse:
     return category_response
 
 
-async def get_category_by_user_db(pagination, user_id: int, db: DBManager) -> list[CategoryResponse]:
+async def get_category_by_user_db(
+    pagination, user_id: int, db: DBManager
+) -> list[CategoryResponse]:
     categories = await db.categories.get_by_user_id(user_id, pagination)
     if not categories:
         raise HTTPException(status_code=404, detail="Category not found")
@@ -29,7 +31,9 @@ async def create_category_db(data: CategoryCreate, db: DBManager):
     return category
 
 
-async def update_category_db(category_id: int, data: CategoryUpdate, db: DBManager) -> CategoryResponse:
+async def update_category_db(
+    category_id: int, data: CategoryUpdate, db: DBManager
+) -> CategoryResponse:
     try:
         category = await db.categories.edit_by_id(data, category_id)
         await db.commit()

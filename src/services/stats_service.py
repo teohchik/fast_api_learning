@@ -27,13 +27,10 @@ async def send_stats_to_all_users() -> dict[int, list[tuple[str, Decimal]]]:
         response = {}
 
         for user in users:
-            count_stmt = (
-                select(func.count(Expense.id))
-                .where(
-                    Expense.user_id == user.id,
-                    Expense.created_at >= month_start,
-                    Expense.created_at < month_end,
-                )
+            count_stmt = select(func.count(Expense.id)).where(
+                Expense.user_id == user.id,
+                Expense.created_at >= month_start,
+                Expense.created_at < month_end,
             )
 
             expenses_count = await db.session.scalar(count_stmt)
@@ -42,10 +39,7 @@ async def send_stats_to_all_users() -> dict[int, list[tuple[str, Decimal]]]:
                 continue
 
             stats_stmt = (
-                select(
-                    Category.title,
-                    func.sum(Expense.amount).label("total")
-                )
+                select(Category.title, func.sum(Expense.amount).label("total"))
                 .join(Category, Expense.category_id == Category.id)
                 .where(
                     Expense.user_id == user.id,

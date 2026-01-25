@@ -7,15 +7,13 @@ from src.db.base import Base
 
 
 class Category(Base):
-    __tablename__ = 'categories'
+    __tablename__ = "categories"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String(100), nullable=False)
-    user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
     visible: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        nullable=False
+        DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     user = relationship("User", back_populates="categories")
     expenses = relationship("Expense", back_populates="category")

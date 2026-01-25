@@ -25,17 +25,17 @@ class BaseRepository:
             return None
         return self.mapper.map_to_domain_entity(db_obj)
 
-    async def get_by_filters(self, pagination: PaginationParams | None = None, order_by=None, **filters):
+    async def get_by_filters(
+        self, pagination: PaginationParams | None = None, order_by=None, **filters
+    ):
         stmt = select(self.model)
         if filters:
             stmt = stmt.filter_by(**filters)
         if order_by is not None:
             stmt = stmt.order_by(order_by)
         if pagination is not None:
-            stmt = (
-                stmt
-                .limit(pagination.per_page)
-                .offset((pagination.page - 1) * pagination.per_page)
+            stmt = stmt.limit(pagination.per_page).offset(
+                (pagination.page - 1) * pagination.per_page
             )
         db_objs = await self.session.execute(stmt)
         return [self.mapper.map_to_domain_entity(db_obj) for db_obj in db_objs.scalars().all()]
