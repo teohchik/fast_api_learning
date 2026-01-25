@@ -1,16 +1,13 @@
-import asyncio
 import json
 
 import pytest
 import pytest_asyncio
-from asgi_lifespan import LifespanManager
 from httpx import AsyncClient, ASGITransport
 from src.config.settings import settings
 from src.db.base import Base
 from src.db.db_manager import DBManager
 from src.db.session import AsyncSessionLocalNullPool, engine
 
-from src.db.models import *
 from src.main import app
 from src.schemas.category import CategoryCreate
 from src.schemas.expense import ExpenseCreate
@@ -41,9 +38,9 @@ async def setup_database(check_test_mode):
     with open("tests/expenses.json", encoding="utf-8") as file_expenses:
         expenses = json.load(file_expenses)
 
-    users = [UserCreate.model_validate(user) for user in users]
-    categories = [CategoryCreate.model_validate(category) for category in categories]
-    expenses = [ExpenseCreate.model_validate(expense) for expense in expenses]
+    users = [UserCreate.model_validate(user_) for user_ in users]
+    categories = [CategoryCreate.model_validate(category_) for category_ in categories]
+    expenses = [ExpenseCreate.model_validate(expense_) for expense_ in expenses]
 
     async with DBManager(session_factory=AsyncSessionLocalNullPool) as db_:
         await db_.users.add_bulk(users)

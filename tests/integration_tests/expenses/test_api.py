@@ -37,6 +37,7 @@ async def test_get_expenses_by_user(ac, user, expense):
     assert "amount" in data[0]
     assert "category_id" in data[0]
 
+
 async def test_get_expense(ac, expense):
     response = await ac.get(f"/expenses/{expense['id']}")
     assert response.status_code == 200
@@ -46,10 +47,11 @@ async def test_get_expense(ac, expense):
     assert data["user_id"] == expense["user_id"]
     assert data["amount"] == expense["amount"]
 
+
 async def test_update_expense(ac, expense):
     new_amount = expense["amount"] + 10.0
     response = await ac.patch(
-        f"/expenses/",
+        "/expenses/",
         params={"expense_id": expense["id"]},
         json={"amount": new_amount}
     )
@@ -59,9 +61,10 @@ async def test_update_expense(ac, expense):
     assert data["id"] == expense["id"]
     assert data["amount"] == new_amount
 
+
 async def test_delete_expense(ac, expense):
     response = await ac.delete(
-        f"/expenses/",
+        "/expenses/",
         params={"expense_id": expense["id"]}
     )
     assert response.status_code == 204

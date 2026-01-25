@@ -1,5 +1,5 @@
 from celery import Celery
-from celery.schedules import crontab
+from celery.schedules import crontab # noqa 401
 
 from src.config.settings import settings
 

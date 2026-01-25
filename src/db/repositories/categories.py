@@ -20,7 +20,7 @@ class CategoriesRepository(BaseRepository):
         )
 
     async def delete_by_id(self, category_id: int):
-        query = select(self.model).where((self.model.id == category_id) & (self.model.visible == True))
+        query = select(self.model).where((self.model.id == category_id) & (self.model.visible == True)) # noqa: E712
 
         result = await self.session.execute(query)
         model = result.scalar_one_or_none()

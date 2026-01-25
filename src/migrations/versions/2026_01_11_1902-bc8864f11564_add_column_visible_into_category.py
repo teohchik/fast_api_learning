@@ -1,3 +1,5 @@
+# ruff: noqa
+
 """add column visible into Category
 
 Revision ID: bc8864f11564

@@ -1,6 +1,5 @@
 import asyncio
-import time
-from datetime import date, timedelta
+from datetime import date
 
 from src.services.stats_service import send_stats_to_all_users
 from src.tasks.celery_app import celery_inst

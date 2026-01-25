@@ -1,11 +1,11 @@
-from fastapi import APIRouter, status, Depends, Request
+from fastapi import APIRouter, status, Request
 from fastapi_cache.decorator import cache
 
 from src.api.deps import PaginationDep
 from src.cache.categories import CategoryCacheKeyBuilder
 from src.db.crud.categories import create_category_db, update_category_db, get_category_by_user_db, delete_category_db, \
     get_category_db
-from src.db.deps import get_db, DBDep
+from src.db.deps import DBDep
 from src.init import redis_manager
 from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
 

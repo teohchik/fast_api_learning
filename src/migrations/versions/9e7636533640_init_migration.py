@@ -1,3 +1,4 @@
+# ruff: noqa
 """init migration
 
 Revision ID: 9e7636533640

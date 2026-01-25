@@ -85,4 +85,4 @@ async def test_delete_category(ac, category):
     get_response = await ac.get(f"/categories/{category['id']}")
     data = get_response.json()
     assert get_response.status_code == 200
-    assert data["visible"] == False
+    assert not data["visible"]
