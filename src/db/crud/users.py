@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
-from sqlalchemy.exc import IntegrityError, NoResultFound
 
+from exceptions import IntegrityViolationException, ObjectNotFoundException
 from src.db.db_manager import DBManager
 from src.db.repositories.users import UsersRepository
 from src.schemas.user import UserCreate, UserUpdate
@@ -25,11 +25,9 @@ async def add_user_db(new_user_data: UserCreate, db: DBManager) -> UserResponse:
     try:
         db_user = await db.users.add(new_user_data)
         await db.commit()
-        print(f"Added new user with ID: {db_user.id}")
-    except IntegrityError as exc:
-        print("IntegrityError occurred while adding a new user:", exc)
+    except IntegrityViolationException:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=409,
             detail="User with this telegram_id already exists.",
         )
 
@@ -40,7 +38,7 @@ async def update_user_db(user_id: int, update_data: UserUpdate, db: DBManager) -
     try:
         db_user = await db.users.edit_by_id(update_data, user_id)
         await db.commit()
-    except NoResultFound:
+    except ObjectNotFoundException:
         raise HTTPException(status_code=404, detail="User not found")
 
     return db_user

@@ -1,6 +1,6 @@
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
 
+from exceptions import ObjectNotFoundException
 from src.api.deps import PaginationParams
 from src.db.models.categories import Category
 from src.db.repositories.base import BaseRepository
@@ -25,7 +25,7 @@ class CategoriesRepository(BaseRepository):
         model = result.scalar_one_or_none()
 
         if not model:
-            raise NoResultFound(f"Category {category_id} not found")
+            raise ObjectNotFoundException
 
         model.visible = False
         await self.session.flush()

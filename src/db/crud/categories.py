@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from sqlalchemy.exc import IntegrityError, NoResultFound
 
+from exceptions import ObjectNotFoundException, IntegrityViolationException
 from src.db.db_manager import DBManager
 from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
 
@@ -25,7 +25,7 @@ async def create_category_db(data: CategoryCreate, db: DBManager):
     try:
         category = await db.categories.add(data)
         await db.commit()
-    except IntegrityError:
+    except IntegrityViolationException:
         raise HTTPException(status_code=404, detail="User not found")
 
     return category
@@ -37,7 +37,7 @@ async def update_category_db(
     try:
         category = await db.categories.edit_by_id(data, category_id)
         await db.commit()
-    except NoResultFound:
+    except ObjectNotFoundException:
         raise HTTPException(status_code=404, detail="Category not found")
 
     return category
@@ -47,7 +47,7 @@ async def delete_category_db(category_id: int, db: DBManager) -> CategoryRespons
     try:
         category = await db.categories.delete_by_id(category_id)
         await db.commit()
-    except NoResultFound:
+    except ObjectNotFoundException:
         raise HTTPException(status_code=404, detail="Category not found")
 
     return category

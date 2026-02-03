@@ -2,8 +2,9 @@ from typing import Iterable
 
 from pydantic import BaseModel
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
+from exceptions import ObjectNotFoundException, IntegrityViolationException
 from src.api.deps import PaginationParams
 from src.db.repositories.mappers.base import DataMapper
 
@@ -43,7 +44,10 @@ class BaseRepository:
     async def add(self, data: BaseModel):
         db_obj = self.model(**data.model_dump())
         self.session.add(db_obj)
-        await self.session.flush()
+        try:
+            await self.session.flush()
+        except IntegrityError:
+            raise IntegrityViolationException
         return self.mapper.map_to_domain_entity(db_obj)
 
     async def add_bulk(self, data_list: Iterable[BaseModel]):
@@ -57,7 +61,7 @@ class BaseRepository:
         result = await self.session.execute(query)
         db_obj = result.scalar_one_or_none()
         if not db_obj:
-            raise NoResultFound(f"{self.model.__name__} not found")
+            raise ObjectNotFoundException
 
         for key, value in data.model_dump(exclude_unset=True).items():
             setattr(db_obj, key, value)
@@ -70,7 +74,7 @@ class BaseRepository:
         result = await self.session.execute(query)
         db_obj = result.scalar_one_or_none()
         if not db_obj:
-            raise NoResultFound(f"{self.model.__name__} with id {obj_id} not found")
+            raise ObjectNotFoundException
         user_id = db_obj.user_id
 
         await self.session.delete(db_obj)

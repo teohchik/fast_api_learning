@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from sqlalchemy.exc import NoResultFound
 
+from exceptions import IntegrityViolationException, ObjectNotFoundException
 from src.db.db_manager import DBManager
 from src.schemas.expense import ExpenseResponse, ExpenseUpdate
 
@@ -29,8 +29,7 @@ async def add_expense_db(expense_data, db: DBManager) -> ExpenseResponse:
     try:
         db_expense = await db.expenses.add(expense_data)
         await db.commit()
-    except Exception as exc:
-        print("Error occurred while adding a new expense:", exc)
+    except IntegrityViolationException:
         raise HTTPException(status_code=409, detail="Expense or User not found.")
     return db_expense
 
@@ -39,7 +38,7 @@ async def update_expense_db(expense_id: int, data: ExpenseUpdate, db: DBManager)
     try:
         db_expense = await db.expenses.edit_by_id(data, expense_id)
         await db.commit()
-    except NoResultFound:
+    except ObjectNotFoundException:
         raise HTTPException(status_code=404, detail="Expense not found")
     return db_expense
 
@@ -49,5 +48,5 @@ async def delete_expense_db(expense_id: int, db: DBManager) -> None:
         user_id = await db.expenses.delete_by_id(expense_id)
         await db.commit()
         return user_id
-    except NoResultFound:
+    except ObjectNotFoundException:
         raise HTTPException(status_code=404, detail="Expense not found")
