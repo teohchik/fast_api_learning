@@ -1,6 +1,10 @@
+import logging
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 class Settings(BaseSettings):

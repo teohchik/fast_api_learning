@@ -10,3 +10,9 @@ class ObjectNotFoundException(ExpenseException):
 
 class IntegrityViolationException(ExpenseException):
     detail = "Integrity constraint violated"
+
+class ObjectAlreadyExistsException(ExpenseException):
+    detail = "Object already exists"
+
+class ForeignKeyViolationException(ExpenseException):
+    detail = "Foreign key constraint violated"

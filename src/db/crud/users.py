@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from exceptions import IntegrityViolationException, ObjectNotFoundException
+from exceptions import ObjectNotFoundException, ObjectAlreadyExistsException
 from src.db.db_manager import DBManager
 from src.db.repositories.users import UsersRepository
 from src.schemas.user import UserCreate, UserUpdate
@@ -25,7 +25,7 @@ async def add_user_db(new_user_data: UserCreate, db: DBManager) -> UserResponse:
     try:
         db_user = await db.users.add(new_user_data)
         await db.commit()
-    except IntegrityViolationException:
+    except ObjectAlreadyExistsException:
         raise HTTPException(
             status_code=409,
             detail="User with this telegram_id already exists.",

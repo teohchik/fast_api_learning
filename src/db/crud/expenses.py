@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from exceptions import IntegrityViolationException, ObjectNotFoundException
+from exceptions import ObjectNotFoundException, ForeignKeyViolationException
 from src.db.db_manager import DBManager
 from src.schemas.expense import ExpenseResponse, ExpenseUpdate
 
@@ -29,7 +29,7 @@ async def add_expense_db(expense_data, db: DBManager) -> ExpenseResponse:
     try:
         db_expense = await db.expenses.add(expense_data)
         await db.commit()
-    except IntegrityViolationException:
+    except ForeignKeyViolationException:
         raise HTTPException(status_code=409, detail="Expense or User not found.")
     return db_expense
 

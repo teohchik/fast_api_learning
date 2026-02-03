@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from exceptions import ObjectNotFoundException, IntegrityViolationException
+from exceptions import ObjectNotFoundException, ForeignKeyViolationException
 from src.db.db_manager import DBManager
 from src.schemas.category import CategoryResponse, CategoryCreate, CategoryUpdate
 
@@ -25,7 +25,7 @@ async def create_category_db(data: CategoryCreate, db: DBManager):
     try:
         category = await db.categories.add(data)
         await db.commit()
-    except IntegrityViolationException:
+    except ForeignKeyViolationException:
         raise HTTPException(status_code=404, detail="User not found")
 
     return category
