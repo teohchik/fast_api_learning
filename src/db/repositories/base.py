@@ -1,10 +1,13 @@
+import logging
 from typing import Iterable
 
+from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
-from exceptions import ObjectNotFoundException, IntegrityViolationException
+from exceptions import ObjectNotFoundException, IntegrityViolationException, ObjectAlreadyExistsException, \
+    ForeignKeyViolationException
 from src.api.deps import PaginationParams
 from src.db.repositories.mappers.base import DataMapper
 
@@ -46,8 +49,17 @@ class BaseRepository:
         self.session.add(db_obj)
         try:
             await self.session.flush()
-        except IntegrityError:
-            raise IntegrityViolationException
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, ForeignKeyViolationError):
+                logging.error(f"Cannot add object to DB, data = {data.model_dump()} Error: {ex}")
+                raise ForeignKeyViolationException
+            elif isinstance(ex.orig.__cause__, UniqueViolationError):
+                logging.error(f"Cannot add object to DB, data = {data.model_dump()} Error: {ex}")
+                raise ObjectAlreadyExistsException
+            else:
+                logging.error(f"Unexpected integrity error, data = {data.model_dump()} Error: {ex}")
+                raise IntegrityViolationException
+
         return self.mapper.map_to_domain_entity(db_obj)
 
     async def add_bulk(self, data_list: Iterable[BaseModel]):
@@ -61,6 +73,7 @@ class BaseRepository:
         result = await self.session.execute(query)
         db_obj = result.scalar_one_or_none()
         if not db_obj:
+            logging.error(f"Cannot edit object, id = {obj_id} data = {data.model_dump()} Error: Object not found")
             raise ObjectNotFoundException
 
         for key, value in data.model_dump(exclude_unset=True).items():
@@ -74,6 +87,7 @@ class BaseRepository:
         result = await self.session.execute(query)
         db_obj = result.scalar_one_or_none()
         if not db_obj:
+            logging.error(f"Cannot delete object, id = {obj_id} Error: Object not found")
             raise ObjectNotFoundException
         user_id = db_obj.user_id
 
