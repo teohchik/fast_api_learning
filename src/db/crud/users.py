@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 from exceptions import ObjectNotFoundException, ObjectAlreadyExistsException
 from src.db.db_manager import DBManager
