@@ -1,10 +1,26 @@
 import logging
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-logging.basicConfig(level=logging.INFO)
+logs_dir = Path(__file__).parent.parent.parent / "logs"
+logs_dir.mkdir(exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        RotatingFileHandler(
+            logs_dir / "app.log",
+            maxBytes=10 * 1024 * 1024,  # 10MB
+            backupCount=3,
+        ),
+    ],
+)
 
 
 class Settings(BaseSettings):
