@@ -5,8 +5,8 @@ stages:
 build-job:
   stage: build
   before_script:
-    - cp {$ENV} .env
-    - cp {$ENV_TEST} .env-test
+    - cp ${ENV} .env
+    - cp ${ENV_TEST} .env-test
   script:
     - docker build -t expenses-api-image .
 
