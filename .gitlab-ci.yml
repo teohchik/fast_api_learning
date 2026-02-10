@@ -16,12 +16,12 @@ build-job:
 Lint:
   stage: lint_format
   script:
-    - ruff check
+    - docker run --rm --network myNetwork expenses-api-image ruff check
 
 Format:
   stage: lint_format
   script:
-    - ruff format
+    - docker run --rm --network myNetwork expenses-api-image ruff format
 
 Migrations job:
   stage: migrations
