@@ -218,8 +218,8 @@ Personal learning project and portfolio piece.
 
 ## 👤 Author
 
-- GitHub: [@teohchik](https://github.com/yourusername)
-- LinkedIn: [linkedin.com/in/teosha](https://linkedin.com/in/yourprofile)
+- GitHub: [@teohchik](https://github.com/teohchik)
+- LinkedIn: [linkedin.com/in/teosha](https://linkedin.com/in/teosha)
 
 ---
 
