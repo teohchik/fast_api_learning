@@ -66,30 +66,33 @@ user_counter = 0
 async def user(ac):
     global user_counter
     user_counter += 1
-    resp = await ac.post("/users/", json={
-        "telegram_id": 777000111 + user_counter,
-        "username": "fixture_user",
-        "first_name": "Fixture",
-        "last_name": "User"
-    })
+    resp = await ac.post(
+        "/users/",
+        json={
+            "telegram_id": 777000111 + user_counter,
+            "username": "fixture_user",
+            "first_name": "Fixture",
+            "last_name": "User",
+        },
+    )
     return resp.json()
 
 
 @pytest.fixture
 async def category(ac, user):
-    resp = await ac.post("/categories/", json={
-        "title": "Fixture category",
-        "user_id": user["id"]
-    })
+    resp = await ac.post("/categories/", json={"title": "Fixture category", "user_id": user["id"]})
     return resp.json()
 
 
 @pytest.fixture
 async def expense(ac, user, category):
-    resp = await ac.post("/expenses/", json={
-        "user_id": user["id"],
-        "category_id": category["id"],
-        "amount": 12.50,
-        "description": "Fixture expense"
-    })
+    resp = await ac.post(
+        "/expenses/",
+        json={
+            "user_id": user["id"],
+            "category_id": category["id"],
+            "amount": 12.50,
+            "description": "Fixture expense",
+        },
+    )
     return resp.json()

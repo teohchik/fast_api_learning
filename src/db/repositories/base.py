@@ -6,8 +6,12 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
-from exceptions import ObjectNotFoundException, IntegrityViolationException, ObjectAlreadyExistsException, \
-    ForeignKeyViolationException
+from exceptions import (
+    ObjectNotFoundException,
+    IntegrityViolationException,
+    ObjectAlreadyExistsException,
+    ForeignKeyViolationException,
+)
 from src.api.deps import PaginationParams
 from src.db.repositories.mappers.base import DataMapper
 
@@ -73,7 +77,9 @@ class BaseRepository:
         result = await self.session.execute(query)
         db_obj = result.scalar_one_or_none()
         if not db_obj:
-            logging.error(f"Cannot edit object, id = {obj_id} data = {data.model_dump()} Error: Object not found")
+            logging.error(
+                f"Cannot edit object, id = {obj_id} data = {data.model_dump()} Error: Object not found"
+            )
             raise ObjectNotFoundException
 
         for key, value in data.model_dump(exclude_unset=True).items():
