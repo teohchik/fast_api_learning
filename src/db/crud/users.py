@@ -7,8 +7,8 @@ from src.schemas.user import UserCreate, UserUpdate
 from src.schemas.user import UserResponse
 
 
-async def get_user_db(user_id, db: DBManager) -> UserResponse:
-    user_response = await db.users.get_one_or_none(id=user_id)
+async def get_user_db(telegram_id, db: DBManager) -> UserResponse:
+    user_response = await db.users.get_one_or_none(telegram_id=telegram_id)
     if not user_response:
         raise HTTPException(status_code=404, detail="User not found")
     return user_response
