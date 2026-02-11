@@ -15,7 +15,7 @@ class Expense(Base):
     )
     amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)  # 12345678.90
     description: Mapped[str | None] = mapped_column(nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     user = relationship("User", back_populates="expenses")

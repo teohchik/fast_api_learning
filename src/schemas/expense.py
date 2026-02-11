@@ -23,5 +23,5 @@ class ExpenseResponse(BaseModel):
     user_id: int
     category_id: int
     amount: float
-    description: str
+    description: str | None
     created_at: datetime
