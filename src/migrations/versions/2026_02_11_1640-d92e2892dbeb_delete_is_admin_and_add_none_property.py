@@ -21,9 +21,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.alter_column(
-        "expenses", "description", existing_type=sa.VARCHAR(), nullable=True
-    )
+    op.alter_column("expenses", "description", existing_type=sa.VARCHAR(), nullable=True)
     op.drop_column("users", "is_admin")
 
 
@@ -39,6 +37,4 @@ def downgrade() -> None:
             nullable=False,
         ),
     )
-    op.alter_column(
-        "expenses", "description", existing_type=sa.VARCHAR(), nullable=False
-    )
+    op.alter_column("expenses", "description", existing_type=sa.VARCHAR(), nullable=False)
