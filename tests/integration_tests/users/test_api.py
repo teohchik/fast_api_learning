@@ -27,7 +27,7 @@ async def test_post_user(telegram_id, username, first_name, last_name, status_co
     response = await ac.post(url=url, json=data)
     assert response.status_code == status_code
     if status_code == 201:
-        url = f"/users/{response.json()['id']}"
+        url = f"/users/{response.json()['telegram_id']}"
         user_response = await ac.get(url=url)
         assert user_response.json()["username"] == response.json()["username"]
         assert user_response.json()["first_name"] == response.json()["first_name"]
@@ -43,8 +43,8 @@ async def test_get_users(ac):
     assert "telegram_id" in response.json()[0]
 
 
-async def test_get_user_by_id(ac, user):
-    url = f"/users/{user['id']}"
+async def test_get_user_by_tg_id(ac, user):
+    url = f"/users/{user['telegram_id']}"
     response = await ac.get(url=url)
     assert response.status_code == 200
     assert isinstance(response.json(), dict)
@@ -56,5 +56,5 @@ async def test_update_user(ac, user):
         json={"username": "updated", "first_name": "User", "last_name": "User"},
     )
     assert response.status_code == 200
-    updated = await ac.get(f"/users/{user['id']}")
+    updated = await ac.get(f"/users/{user['telegram_id']}")
     assert updated.json()["username"] == "updated"
