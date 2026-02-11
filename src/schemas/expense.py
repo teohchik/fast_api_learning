@@ -7,7 +7,7 @@ class ExpenseCreate(BaseModel):
     user_id: int = Field(gt=0)
     category_id: int = Field(gt=0)
     amount: float = Field(gt=0, le=1_000_000)
-    description: str = Field(min_length=1, max_length=500)
+    description: str | None = Field(default=None, min_length=1, max_length=500)
     created_at: datetime = Field(default=datetime.now())
 
 
