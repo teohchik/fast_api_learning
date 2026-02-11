@@ -6,6 +6,7 @@ async def test_api_key_missing(ac, user):
     response = await ac.get(url=f"/expenses/user/{user['id']}", headers={"X-API-KEY": "wrong-key"})
     assert response.status_code == 403
 
+
 async def test_post_missing_description(ac, category):
     data = {
         "user_id": category["user_id"],
@@ -14,6 +15,7 @@ async def test_post_missing_description(ac, category):
     }
     response = await ac.post(url="/expenses/", json=data)
     assert response.status_code == 201
+
 
 @pytest.mark.parametrize(
     "user_id, category_id, amount, description, status_code",
