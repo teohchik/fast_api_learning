@@ -15,7 +15,7 @@ async def get_expense_db(expense_id: int, db: DBManager) -> ExpenseResponse:
 async def get_expenses_by_user_db(
     pagination, db: DBManager, user_id: int, year: int, month: int
 ) -> list[ExpenseResponse]:
-    if year and month:
+    if year is not None and month is not None:
         response = await db.expenses.get_expenses_for_month(
             user_id=user_id, year=year, month=month, pagination=pagination
         )
