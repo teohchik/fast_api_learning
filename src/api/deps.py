@@ -8,7 +8,7 @@ from src.config.settings import settings
 
 class PaginationParams(BaseModel):
     page: Annotated[int | None, Query(1, ge=1)]
-    per_page: Annotated[int | None, Query(20, ge=1, le=100)]
+    per_page: Annotated[int | None, Query(20, ge=1, le=1000)]
 
 
 PaginationDep: TypeAlias = Annotated[PaginationParams, Depends()]
