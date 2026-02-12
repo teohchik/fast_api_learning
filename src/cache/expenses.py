@@ -22,10 +22,10 @@ class ExpensesCacheKeyBuilder(BaseCacheKeyBuilder):
         per_page = request.query_params.get("per_page")
 
         key_parts = [f"{cls.prefix}:user:{user_id}"]
-        
+
         if year and month:
             key_parts.append(f"year:{year}:month:{month}")
-        
+
         if page and per_page:
             key_parts.append(f"page:{page}:per:{per_page}")
 
