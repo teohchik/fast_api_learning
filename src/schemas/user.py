@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -25,3 +27,4 @@ class UserResponse(BaseModel):
     first_name: str
     last_name: str | None = None
     currency: str
+    created_at: datetime
