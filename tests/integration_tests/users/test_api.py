@@ -7,21 +7,22 @@ async def test_api_key_missing(ac):
 
 
 @pytest.mark.parametrize(
-    "telegram_id, username, first_name, last_name, status_code",
+    "telegram_id, username, first_name, last_name, currency, status_code",
     [
-        pytest.param(574958603, "john_doe", "John", "Doe", 201, id="valid_user_1"),
-        pytest.param(574958604, "jane_smith", "Jane", "Smith", 201, id="valid_user_2"),
-        pytest.param(574958603, "john_doe", "John", "Doe", 409, id="duplicate_telegram_id"),
-        pytest.param(574958608, "alikante33ff", None, "Loif", 422, id="missing_first_name"),
+        pytest.param(574958603, "john_doe", "John", "Doe", "$", 201, id="valid_user_1"),
+        pytest.param(574958604, "jane_smith", "Jane", "Smith", "dollars", 201, id="valid_user_2"),
+        pytest.param(574958603, "john_doe", "John", "Doe", "###", 409, id="duplicate_telegram_id"),
+        pytest.param(574958608, "alikante33ff", None, "Loif", "$", 422, id="missing_first_name"),
     ],
 )
-async def test_post_user(telegram_id, username, first_name, last_name, status_code, ac):
+async def test_post_user(telegram_id, username, first_name, last_name, currency, status_code, ac):
     url = "/users/"
     data = {
         "telegram_id": telegram_id,
         "username": username,
         "first_name": first_name,
         "last_name": last_name,
+        "currency": currency,
     }
 
     response = await ac.post(url=url, json=data)
@@ -53,7 +54,7 @@ async def test_get_user_by_tg_id(ac, user):
 async def test_update_user(ac, user):
     response = await ac.patch(
         f"/users/{user['id']}",
-        json={"username": "updated", "first_name": "User", "last_name": "User"},
+        json={"username": "updated", "first_name": "User", "last_name": "User", "currency": "$"},
     )
     assert response.status_code == 200
     updated = await ac.get(f"/users/{user['telegram_id']}")
