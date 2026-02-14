@@ -10,9 +10,9 @@ users_router = APIRouter(
 )
 
 
-@users_router.get("/{user_id}", response_model=UserResponse)
-async def get_user(user_id: int, db: DBDep):
-    return await get_user_db(user_id, db)
+@users_router.get("/{telegram_id}", response_model=UserResponse)
+async def get_user(telegram_id: int, db: DBDep):
+    return await get_user_db(telegram_id, db)
 
 
 @users_router.get("/", response_model=list[UserResponse])
