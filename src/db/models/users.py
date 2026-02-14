@@ -11,5 +11,6 @@ class User(Base):
     username: Mapped[str | None] = mapped_column(String(length=255))
     first_name: Mapped[str] = mapped_column(String(length=255))
     last_name: Mapped[str | None] = mapped_column(String(length=255))
+    currency: Mapped[str] = mapped_column(String(length=10), default="€", server_default="€")
     categories = relationship("Category", back_populates="user")
     expenses = relationship("Expense", back_populates="user")
