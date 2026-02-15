@@ -7,7 +7,6 @@ services:
     networks:
       - myNetwork
 
-
 networks:
   myNetwork:
     external: true
