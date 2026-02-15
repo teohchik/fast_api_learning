@@ -12,30 +12,6 @@ services:
     env_file:
       - .env
 
-  expenses_celery_worker_service:
-    container_name: 'expenses_celery_worker'
-    build:
-      context: .
-    volumes:
-      - .:/app
-    networks:
-      - myNetwork
-    env_file:
-      - .env
-    command: "celery --app=src.tasks.celery_app:celery_inst worker -l INFO"
-
-  expenses_celery_beat_service:
-    container_name: 'expenses_celery_beat'
-    build:
-      context: .
-    volumes:
-      - .:/app
-    networks:
-      - myNetwork
-    env_file:
-      - .env
-    command: "celery --app=src.tasks.celery_app:celery_inst beat -l INFO"
-
 networks:
   myNetwork:
     external: true
