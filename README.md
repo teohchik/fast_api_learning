@@ -4,6 +4,7 @@ REST API for personal expense tracking built with FastAPI, PostgreSQL, Redis, an
 
 ## 🚀 Features
 
+
 - RESTful API for expenses, categories, and users management
 - Async database operations with SQLAlchemy
 - Redis caching for better performance
