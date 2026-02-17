@@ -36,19 +36,21 @@ async def test_post_expense(user_id, category_id, amount, description, status_co
     assert response.status_code == status_code
 
 
-async def test_get_expenses_by_user(ac, user, expense):
+async def test_get_expenses_by_user(ac, expense):
     now = datetime.now()
     month = now.month
     year = now.year
 
-    response = await ac.get(f"/expenses/user/{user['id']}", params={"year": year, "month": month})
+    response = await ac.get(
+        f"/expenses/user/{expense['user_id']}", params={"year": year, "month": month}
+    )
     assert response.status_code == 200
     data = response.json()
 
     assert isinstance(data, list)
     assert len(data) >= 1
 
-    assert data[0]["user_id"] == user["id"]
+    assert data[0]["user_id"] == expense["user_id"]
     assert "amount" in data[0]
     assert "category_id" in data[0]
 

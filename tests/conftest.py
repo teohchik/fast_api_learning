@@ -11,6 +11,7 @@ from src.db.session import AsyncSessionLocalNullPool, engine
 from src.main import app
 from src.schemas.category import CategoryCreate
 from src.schemas.expense import ExpenseCreate
+from src.schemas.salary import SalaryCreate
 from src.schemas.user import UserCreate
 
 
@@ -37,15 +38,19 @@ async def setup_database(check_test_mode):
         categories = json.load(file_categories)
     with open("tests/expenses.json", encoding="utf-8") as file_expenses:
         expenses = json.load(file_expenses)
+    with open("tests/salaries.json", encoding="utf-8") as file_salaries:
+        salaries = json.load(file_salaries)
 
     users = [UserCreate.model_validate(user_) for user_ in users]
     categories = [CategoryCreate.model_validate(category_) for category_ in categories]
     expenses = [ExpenseCreate.model_validate(expense_) for expense_ in expenses]
+    salaries = [SalaryCreate.model_validate(salary_) for salary_ in salaries]
 
     async with DBManager(session_factory=AsyncSessionLocalNullPool) as db_:
         await db_.users.add_bulk(users)
         await db_.categories.add_bulk(categories)
         await db_.expenses.add_bulk(expenses)
+        await db_.salaries.add_bulk(salaries)
         await db_.commit()
 
 
@@ -93,6 +98,19 @@ async def expense(ac, user, category):
             "category_id": category["id"],
             "amount": 12.50,
             "description": "Fixture expense",
+        },
+    )
+    return resp.json()
+
+
+@pytest.fixture
+async def salary(ac, user):
+    resp = await ac.post(
+        "/salaries/",
+        json={
+            "user_id": user["id"],
+            "amount": 1200.50,
+            "description": "Fixture salary",
         },
     )
     return resp.json()

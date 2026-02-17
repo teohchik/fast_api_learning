@@ -1,5 +1,6 @@
 from src.db.repositories.categories import CategoriesRepository
 from src.db.repositories.expenses import ExpensesRepository
+from src.db.repositories.salaries import SalariesRepository
 from src.db.repositories.users import UsersRepository
 
 
@@ -13,6 +14,7 @@ class DBManager:
         self.users = UsersRepository(self.session)
         self.categories = CategoriesRepository(self.session)
         self.expenses = ExpensesRepository(self.session)
+        self.salaries = SalariesRepository(self.session)
 
         return self
 

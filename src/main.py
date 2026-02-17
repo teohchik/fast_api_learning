@@ -14,6 +14,7 @@ from src.config.settings import settings
 from src.api.routers.categories import category_router
 from src.api.routers.expenses import expenses_router
 from src.api.routers.users import users_router
+from src.api.routers.salaries import salary_router
 from src.init import redis_manager
 
 
@@ -33,6 +34,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(users_router)
 app.include_router(expenses_router)
 app.include_router(category_router)
+app.include_router(salary_router)
 
 if __name__ == "__main__":
     import uvicorn

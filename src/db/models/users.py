@@ -20,3 +20,4 @@ class User(Base):
     )
     categories = relationship("Category", back_populates="user")
     expenses = relationship("Expense", back_populates="user")
+    salaries = relationship("Salary", back_populates="user")
