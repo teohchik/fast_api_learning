@@ -5,7 +5,7 @@ from src.cache.base import BaseCacheKeyBuilder
 
 class ExpensesCacheKeyBuilder(BaseCacheKeyBuilder):
     prefix = "expenses"
-    expire = 400
+    expire = 1500
 
     @classmethod
     def build(cls, *args, request: Request = None, **kwargs) -> str:
