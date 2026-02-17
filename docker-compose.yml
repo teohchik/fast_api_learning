@@ -11,6 +11,18 @@ services:
       - myNetwork
     env_file:
       - .env
+  nginx_service:
+    container_name: 'expenses_nginx'
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - myNetwork
+    ports:
+      - '80:80'
+    depends_on:
+      - expenses_back_service
+
 
 networks:
   myNetwork:
