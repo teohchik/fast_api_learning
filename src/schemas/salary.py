@@ -7,7 +7,7 @@ class SalaryCreate(BaseModel):
     user_id: int = Field(gt=0)
     amount: float = Field(gt=0, le=1_000_000)
     description: str | None = Field(default=None, min_length=1, max_length=500)
-    created_at: datetime | None = Field(default=datetime.now())
+    created_at: datetime | None = Field(default_factory=datetime.now)
 
 
 class SalaryUpdate(BaseModel):
